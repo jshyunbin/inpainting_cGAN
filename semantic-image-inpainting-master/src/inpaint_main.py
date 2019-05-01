@@ -12,7 +12,7 @@ from inpaint_solver import Solver
 FLAGS = tf.flags.FLAGS
 
 tf.flags.DEFINE_string('gpu_index', '0', 'gpu index, default: 0')
-tf.flags.DEFINE_string('dataset', 'celebA', 'dataset name for choice [celebA|svhn], default: celebA')
+tf.flags.DEFINE_string('dataset', 'celebA', 'dataset name for choice [celebA|svhn|vub], default: celebA')
 
 tf.flags.DEFINE_float('learning_rate', 0.01, 'learning rate to update latent vector z, default: 0.01')
 tf.flags.DEFINE_float('momentum', 0.9, 'momentum term of the NAG optimizer for latent vector, default: 0.9')

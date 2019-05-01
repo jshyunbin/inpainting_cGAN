@@ -1,2 +1,4 @@
 # selective-inpainting_R-E
-심화 R&amp;E
+This repository is a Tensorflow implementation of
+
+

@@ -95,10 +95,11 @@ class SVHN(object):
         return np.asarray(batch_imgs_)
     
     
-    class VUB(object):
+class VUB(object):
     def __init__(self, flags, dataset_name):
         self.flags = flags
         self.dataset_name = dataset_name
+        # TODO: use OpenCV to edit image size and format
         self.image_size = (64, 64, 3)
         self.num_trains, self.num_vals = 0, 0
 
@@ -112,6 +113,7 @@ class SVHN(object):
         print('Load {} dataset...'.format(self.dataset_name))
 
         # TODO: convert 'TIF' format to [N, H, W, C] and normalized to [-1. 1.]
+
 
         print('Load {} dataset SUCCESS!'.format(self.dataset_name))
 
