@@ -93,6 +93,48 @@ class SVHN(object):
                        for idx in range(batch_imgs.shape[0])]
 
         return np.asarray(batch_imgs_)
+    
+    
+    class VUB(object):
+    def __init__(self, flags, dataset_name):
+        self.flags = flags
+        self.dataset_name = dataset_name
+        self.image_size = (64, 64, 3)
+        self.num_trains, self.num_vals = 0, 0
+
+        self.vub_train_path = os.path.join('../../Data', self.dataset_name, 'train_32x32.mat')
+        self.vub_val_path = os.path.join('../../Data', self.dataset_name, 'test_32x32.mat')
+        self._load_vub()
+
+        np.random.seed(seed=int(time.time()))  # set random seed according to the current time
+
+    def _load_vub(self):
+        print('Load {} dataset...'.format(self.dataset_name))
+
+        # TODO: convert 'TIF' format to [N, H, W, C] and normalized to [-1. 1.]
+
+        print('Load {} dataset SUCCESS!'.format(self.dataset_name))
+
+    def train_next_batch(self, batch_size):
+        batch_indexs = np.random.choice(range(self.train_data.shape[0]), batch_size, replace=False)
+        batch_imgs = self.train_data[batch_indexs]
+
+        # resize (32, 32, 3) to (64, 64, 3) and random flip
+        batch_imgs_ = [utils.random_flip(
+            utils.transform(scipy.misc.imresize(batch_imgs[idx], (self.image_size[0], self.image_size[1]))))
+            for idx in range(batch_imgs.shape[0])]
+
+        return np.asarray(batch_imgs_)
+
+    def val_next_batch(self, batch_size):
+        batch_indexs = np.random.choice(range(self.val_data.shape[0]), batch_size, replace=False)
+        batch_imgs = self.val_data[batch_indexs]
+
+        # resize (32, 32, 3) to (64, 64, 3)
+        batch_imgs_ = [utils.transform(scipy.misc.imresize(batch_imgs[idx], (self.image_size[0], self.image_size[1])))
+                       for idx in range(batch_imgs.shape[0])]
+
+        return np.asarray(batch_imgs_)
 
 
 # noinspection PyPep8Naming
@@ -101,6 +143,8 @@ def Dataset(flags, dataset_name):
         return CelebA(flags, dataset_name)
     elif dataset_name == 'svhn':
         return SVHN(flags, dataset_name)
+    elif dataset_name == 'vub':
+        return VUB(flags, dataset_name)
     else:
         raise NotImplementedError
 
