@@ -12,5 +12,5 @@ This repository is a Tensorflow implementation of "Selective-inpainting"
 - pyamg 3.3.2
 - opencv 4.1.0
 
-##Inpainting
-
+## Selective Inpainting
+selective inpainting 
