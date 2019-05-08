@@ -9,6 +9,7 @@ import time
 import numpy as np
 import scipy.io
 import scipy.misc
+import cv2 as cv
 
 import utils as utils
 
@@ -99,21 +100,44 @@ class VUB(object):
     def __init__(self, flags, dataset_name):
         self.flags = flags
         self.dataset_name = dataset_name
-        # TODO: use OpenCV to edit image size and format
         self.image_size = (64, 64, 3)
         self.num_trains, self.num_vals = 0, 0
-
-        self.vub_train_path = os.path.join('../../Data', self.dataset_name, 'train_32x32.mat')
-        self.vub_val_path = os.path.join('../../Data', self.dataset_name, 'test_32x32.mat')
+        self._edit_vub()
+        self.vub_train_path = os.path.join('../../Data', self.dataset_name, 'train')
+        self.vub_val_path = os.path.join('../../Data', self.dataset_name, 'val')
         self._load_vub()
 
         np.random.seed(seed=int(time.time()))  # set random seed according to the current time
 
+    def _edit_vub(self):
+        # TODO: image resize to [256, 256] with constant scale
+        exists = os.path.isdir('../../Data/{}/{}'.format(self.dataset_name, 'train'))
+        if exists:
+            return
+        else:
+            files = utils.all_files_under('../../Data/{}/{}'.format(self.dataset_name, 'urban'))
+            count = 0
+            for file in files:
+                image = cv.imread(file)
+                height, width, channels = image.shape
+                ycount = int(height/64)
+                xcount = int(width/64)
+                for i in ycount:
+                    for j in xcount:
+                        # TODO: discriminate train(80%) and val(20%) files
+                        temp = image.copy()[i*64:(i+1)*64, j*64:(j+1)*64]  # crop the image to [64, 64, 3] format
+                        cv.imwrite('../../Data/{}/{}/{}'.format(self.dataset_name, 'train', '{:04d}'.format(count) + '.png'), temp)
+                        cv.imwrite('../../Data/{}/{}/{}'.format(self.dataset_name, 'val', '{:04d}'.format(count) + '.png'), temp)
+                        count += 1
+
+    # TODO: change the codes underneath
     def _load_vub(self):
         print('Load {} dataset...'.format(self.dataset_name))
+        self.train_data = utils.all_files_under(self.vub_train_path)
+        self.num_trains = len(self.train_data)
 
-        # TODO: convert 'TIF' format to [N, H, W, C] and normalized to [-1. 1.]
-
+        self.val_data = utils.all_files_under(self.vub_val_path)
+        self.num_vals = len(self.val_data)
 
         print('Load {} dataset SUCCESS!'.format(self.dataset_name))
 
