@@ -16,8 +16,24 @@
   <component name="FileEditorManager">
     <leaf>
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor" />
+        <entry file="file://$PROJECT_DIR$/semantic-image-inpainting-master/src/main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="441">
+              <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+              <folding>
+                <element signature="e#289#298#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/semantic-image-inpainting-master/src/inpaint_main.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="798">
+              <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+            </state>
+          </provider>
         </entry>
       </file>
     </leaf>
@@ -44,10 +60,10 @@
         <option value="$PROJECT_DIR$/semantic-image-inpainting-master/src/inpaint_main.py" />
         <option value="$PROJECT_DIR$/semantic-image-inpainting-master/src/download.py" />
         <option value="$PROJECT_DIR$/semantic-image-inpainting-master/src/image_edit.py" />
-        <option value="$PROJECT_DIR$/semantic-image-inpainting-master/src/main.py" />
         <option value="$PROJECT_DIR$/semantic-image-inpainting-master/src/utils.py" />
         <option value="$PROJECT_DIR$/semantic-image-inpainting-master/src/dataset.py" />
         <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/semantic-image-inpainting-master/src/main.py" />
       </list>
     </option>
   </component>
@@ -57,6 +73,7 @@
     <option name="width" value="1400" />
     <option name="height" value="1000" />
   </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator currentView="Scope" currentSubView="Scope 'Project Files'; set:Project Files; class com.intellij.psi.search.scope.ProjectFilesScope" proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
@@ -70,6 +87,17 @@
               <item name="selective-inpainting_R-E" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
               <item name="C:\Users\Joshua Lee\Documents\GitHub\selective-inpainting_R-E" type="442cc68d:ScopeViewTreeModel$RootNode" />
             </path>
+            <path>
+              <item name="selective-inpainting_R-E" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="C:\Users\Joshua Lee\Documents\GitHub\selective-inpainting_R-E" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="semantic-image-inpainting-master" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
+            <path>
+              <item name="selective-inpainting_R-E" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
+              <item name="C:\Users\Joshua Lee\Documents\GitHub\selective-inpainting_R-E" type="442cc68d:ScopeViewTreeModel$RootNode" />
+              <item name="semantic-image-inpainting-master" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -82,7 +110,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/Data" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="vcs.Git" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -139,12 +167,12 @@
       <workItem from="1556696245016" duration="1055000" />
       <workItem from="1556699373928" duration="823000" />
       <workItem from="1557294111220" duration="8329000" />
-      <workItem from="1557310014396" duration="270000" />
+      <workItem from="1557310014396" duration="467000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="11933000" />
+    <option name="totallyTimeSpent" value="12130000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -157,7 +185,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.114605546" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -186,6 +213,11 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <ignored-roots>
+      <path value="$PROJECT_DIR$" />
+    </ignored-roots>
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/semantic-image-inpainting-master/src/image_edit.py">
       <provider selected="true" editor-type-id="text-editor" />
@@ -204,13 +236,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="735">
           <caret line="62" selection-start-line="62" selection-end-line="62" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/semantic-image-inpainting-master/src/inpaint_main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="14" column="105" lean-forward="true" selection-start-line="14" selection-start-column="105" selection-end-line="14" selection-end-column="105" />
         </state>
       </provider>
     </entry>
@@ -274,16 +299,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/semantic-image-inpainting-master/src/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="14" column="34" lean-forward="true" selection-start-line="14" selection-start-column="34" selection-end-line="14" selection-end-column="34" />
-          <folding>
-            <element signature="e#289#298#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/semantic-image-inpainting-master/src/utils.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1092">
@@ -308,7 +323,37 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="2" lean-forward="true" selection-start-line="2" selection-end-line="2" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/vcs.xml">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/modules.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/.idea/misc.xml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/semantic-image-inpainting-master/src/inpaint_main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="798">
+          <caret line="41" lean-forward="true" selection-start-line="41" selection-end-line="41" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/semantic-image-inpainting-master/src/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="441">
+          <caret line="21" lean-forward="true" selection-start-line="21" selection-end-line="21" />
+          <folding>
+            <element signature="e#289#298#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
   </component>
 </project>
