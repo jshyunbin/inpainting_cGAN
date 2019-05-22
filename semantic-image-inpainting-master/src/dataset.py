@@ -10,6 +10,7 @@ import numpy as np
 import scipy.io
 import scipy.misc
 import cv2 as cv
+from matplotlib import pyplot as plt
 
 import utils as utils
 
@@ -102,9 +103,9 @@ class VUB(object):
         self.dataset_name = dataset_name
         self.image_size = (64, 64, 3)
         self.num_trains, self.num_vals = 0, 0
-        self.vub_train_path = os.path.join('../../Data', self.dataset_name, 'train')
-        self.vub_val_path = os.path.join('../../Data', self.dataset_name, 'val')
-        self.vub_raw_data_path = os.path.join('../../rawData/', self.dataset_name)
+        self.vub_train_path = os.path.join('..\\..\\Data', self.dataset_name, 'train')
+        self.vub_val_path = os.path.join('..\\..\\Data', self.dataset_name, 'val')
+        self.vub_raw_data_path = os.path.join('..\\..\\rawData', self.dataset_name)
         self._edit_vub()
         self._load_vub()
 
@@ -112,15 +113,16 @@ class VUB(object):
 
     def _edit_vub(self):
         # TODO: image resize to [256, 256] with constant scale
-        exists = os.path.isdir(self.vub_train_path)
+        train_file_size = os.path.getsize(self.vub_train_path)
+        val_file_size = os.path.getsize(self.vub_val_path)
+        exists = train_file_size & val_file_size
         if exists:
             return
         else:
-            print(os.path.abspath(self.vub_raw_data_path))
-            print(os.path.isdir(self.vub_raw_data_path))
             files = utils.all_files_under('../../rawData/{}/{}'.format(self.dataset_name, 'urban'))
             count = 0
             totfiles = len(files)*16
+            print(os.path.abspath('../../Data'))
             for file in files:
                 image = cv.imread(file)
                 height, width, channels = image.shape
@@ -128,17 +130,15 @@ class VUB(object):
                     image = image[0:width, :]
                 else:
                     image = image[:, 0:height]
-                cv.resize(image, (256, 256))
+                image = cv.resize(image, (256, 256))
                 for i in range(4):
                     for j in range(4):
                         temp = image.copy()[i*64:(i+1)*64, j*64:(j+1)*64]  # crop the image to [64, 64, 3] format
+
                         if count < totfiles/5*4:
-                            cv.imwrite('..../Data/{}/{}/{}'.format(self.dataset_name, 'train', '{:04d}'.format(
-                                count) +
-                                                                    '.png'), temp)
+                            cv.imwrite('../../Data/{}/{}/{:04d}.bmp'.format(self.dataset_name, 'train', count), temp)
                         else:
-                            cv.imwrite('../../Data/{}/{}/{}'.format(self.dataset_name, 'val', '{:04d}'.format(count) +
-                                                                    '.png'), temp)
+                            cv.imwrite('../../Data/{}/{}/{:04d}.bmp'.format(self.dataset_name, 'val', count), temp)
                         count += 1
 
     # TODO: change the codes underneath

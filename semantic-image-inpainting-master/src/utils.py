@@ -85,6 +85,7 @@ def load_data(image_path, input_height, input_width, resize_height=64, resize_wi
 
 
 def all_files_under(path, extension=None, append_path=True, sort=True):
+    print(os.getcwd())
     if append_path:
         if extension is None:
             filenames = [os.path.join(path, fname) for fname in os.listdir(path)]
