@@ -102,32 +102,43 @@ class VUB(object):
         self.dataset_name = dataset_name
         self.image_size = (64, 64, 3)
         self.num_trains, self.num_vals = 0, 0
-        self._edit_vub()
         self.vub_train_path = os.path.join('../../Data', self.dataset_name, 'train')
         self.vub_val_path = os.path.join('../../Data', self.dataset_name, 'val')
+        self.vub_raw_data_path = os.path.join('../../rawData/', self.dataset_name)
+        self._edit_vub()
         self._load_vub()
 
         np.random.seed(seed=int(time.time()))  # set random seed according to the current time
 
     def _edit_vub(self):
         # TODO: image resize to [256, 256] with constant scale
-        exists = os.path.isdir('../../Data/{}/{}'.format(self.dataset_name, 'train'))
+        exists = os.path.isdir(self.vub_train_path)
         if exists:
             return
         else:
-            files = utils.all_files_under('../../Data/{}/{}'.format(self.dataset_name, 'urban'))
+            print(os.path.abspath(self.vub_raw_data_path))
+            print(os.path.isdir(self.vub_raw_data_path))
+            files = utils.all_files_under('../../rawData/{}/{}'.format(self.dataset_name, 'urban'))
             count = 0
+            totfiles = len(files)*16
             for file in files:
                 image = cv.imread(file)
                 height, width, channels = image.shape
-                ycount = int(height/64)
-                xcount = int(width/64)
-                for i in ycount:
-                    for j in xcount:
-                        # TODO: discriminate train(80%) and val(20%) files
+                if height > width:
+                    image = image[0:width, :]
+                else:
+                    image = image[:, 0:height]
+                cv.resize(image, (256, 256))
+                for i in range(4):
+                    for j in range(4):
                         temp = image.copy()[i*64:(i+1)*64, j*64:(j+1)*64]  # crop the image to [64, 64, 3] format
-                        cv.imwrite('../../Data/{}/{}/{}'.format(self.dataset_name, 'train', '{:04d}'.format(count) + '.png'), temp)
-                        cv.imwrite('../../Data/{}/{}/{}'.format(self.dataset_name, 'val', '{:04d}'.format(count) + '.png'), temp)
+                        if count < totfiles/5*4:
+                            cv.imwrite('..../Data/{}/{}/{}'.format(self.dataset_name, 'train', '{:04d}'.format(
+                                count) +
+                                                                    '.png'), temp)
+                        else:
+                            cv.imwrite('../../Data/{}/{}/{}'.format(self.dataset_name, 'val', '{:04d}'.format(count) +
+                                                                    '.png'), temp)
                         count += 1
 
     # TODO: change the codes underneath
