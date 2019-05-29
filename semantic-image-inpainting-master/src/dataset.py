@@ -112,7 +112,6 @@ class VUB(object):
         np.random.seed(seed=int(time.time()))  # set random seed according to the current time
 
     def _edit_vub(self):
-        # TODO: image resize to [256, 256] with constant scale
         train_file_size = os.path.getsize(self.vub_train_path)
         val_file_size = os.path.getsize(self.vub_val_path)
         exists = train_file_size & val_file_size
@@ -141,7 +140,6 @@ class VUB(object):
                             cv.imwrite('../../Data/{}/{}/{:04d}.bmp'.format(self.dataset_name, 'val', count), temp)
                         count += 1
 
-    # TODO: change the codes underneath
     def _load_vub(self):
         print('Load {} dataset...'.format(self.dataset_name))
         self.train_data = utils.all_files_under(self.vub_train_path)
