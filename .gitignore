@@ -3,6 +3,5 @@
 .idea
 
 # datasets and more...
-rawData
-Data
-__pycache__
+rawData/
+Data/
