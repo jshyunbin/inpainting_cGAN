@@ -13,7 +13,7 @@ FLAGS = tf.flags.FLAGS
 
 tf.flags.DEFINE_string('gpu_index', '0', 'gpu index, default: 0')
 tf.flags.DEFINE_integer('batch_size', 256, 'batch size for one feed forwrad, default: 256')
-tf.flags.DEFINE_string('dataset', 'svhn', 'dataset name for choice [celebA|svhn], default: svhn')
+tf.flags.DEFINE_string('dataset', 'vub', 'dataset name for choice [celebA|svhn|vub], default: vub')
 
 tf.flags.DEFINE_bool('is_train', False, 'training or inference mode, default: False')
 tf.flags.DEFINE_float('learning_rate', 2e-4, 'initial learning rate, default: 0.0002')
@@ -33,7 +33,7 @@ def main(_):
     os.environ['CUDA_VISIBLE_DEVICES'] = FLAGS.gpu_index
 
     solver = Solver(FLAGS)
-    if FLAGS.is_train:
+    if FLAGS.is_train:  
         solver.train()
     else:
         solver.test()

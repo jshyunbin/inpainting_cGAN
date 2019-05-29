@@ -47,19 +47,24 @@ def center_crop(img, crop_h, crop_w, resize_h=64, resize_w=64):
     return img_crop
 
 
-def imread(path, is_gray_scale=False, img_size=None):
-    if is_gray_scale:
-        img = scipy.misc.imread(path, flatten=True).astype(np.float)
-    else:
-        img = scipy.misc.imread(path, mode='RGB').astype(np.float)
+def imread(path, is_gray_scale=False, img_size=None, img_format='float'):
+    # TODO: image
+    if img_format == 'float':
+        if is_gray_scale:
+            img = scipy.misc.imread(path, flatten=True).astype(np.float)
+        else:
+            img = scipy.misc.imread(path, mode='RGB').astype(np.float)
 
-        if not (img.ndim == 3 and img.shape[2] == 3):
-            img = np.dstack((img, img, img))
+            if not (img.ndim == 3 and img.shape[2] == 3):
+                img = np.dstack((img, img, img))
 
-    if img_size is not None:
-        img = scipy.misc.imresize(img, img_size)
+        if img_size is not None:
+            img = scipy.misc.imresize(img, img_size)
+        return img
 
-    return img
+    elif img_format == 'png':
+        img = scipy.misc.imread(path, mode='RGB')
+        return img
 
 
 def load_data(image_path, input_height, input_width, resize_height=64, resize_width=64, crop=True, is_gray_scale=False):
@@ -80,6 +85,7 @@ def load_data(image_path, input_height, input_width, resize_height=64, resize_wi
 
 
 def all_files_under(path, extension=None, append_path=True, sort=True):
+    print(os.getcwd())
     if append_path:
         if extension is None:
             filenames = [os.path.join(path, fname) for fname in os.listdir(path)]
