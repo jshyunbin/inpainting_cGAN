@@ -118,7 +118,7 @@ class VUB(object):
         if exists:
             return
         else:
-            files = utils.all_files_under('../../rawData/{}/{}'.format(self.dataset_name, 'urban'))
+            files = utils.all_files_under('../../Data/{}/{}'.format(self.dataset_name, 'urban'))
             count = 0
             totfiles = len(files)*16
             print(os.path.abspath('../../Data'))
