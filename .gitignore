@@ -1,7 +1,3 @@
 # Don't track content of these folders
 # IDE configurations
 .idea
-
-# datasets and more...
-rawData/
-Data/
