@@ -95,17 +95,20 @@ class SVHN(object):
                        for idx in range(batch_imgs.shape[0])]
 
         return np.asarray(batch_imgs_)
-    
-    
+
+
 class VUB(object):
     def __init__(self, flags, dataset_name):
         self.flags = flags
         self.dataset_name = dataset_name
         self.image_size = (64, 64, 3)
         self.num_trains, self.num_vals = 0, 0
-        self.vub_train_path = os.path.join('../../Data', self.dataset_name, 'train')
-        self.vub_val_path = os.path.join('../../Data', self.dataset_name, 'val')
-        self.vub_raw_data_path = os.path.join('../../Data', self.dataset_name)
+        self.vub_train_path = os.path.join('content/gdrive/My Drive/selective-inpainting_R-E/Data', self.dataset_name,
+                                           'train')
+        self.vub_val_path = os.path.join('content/gdrive/My Drive/selective-inpainting_R-E/Data', self.dataset_name,
+                                         'val')
+        self.vub_raw_data_path = os.path.join(‘content / gdrive / My
+        Drive / selective - inpainting_R - E / Data’', self.dataset_name)
         self._edit_vub()
         self._load_vub()
 
@@ -118,27 +121,29 @@ class VUB(object):
         if exists:
             return
         else:
-            files = utils.all_files_under('../../Data/{}/{}'.format(self.dataset_name, 'urban'))
+            files = utils.all_files_under('content/gdrive/MyDrive/selective-inpainting_R-E/Data/{}/{}'.format(self.dataset_name, 'urban'))
             count = 0
-            totfiles = len(files)*16
-            print(os.path.abspath('../../Data'))
+            totfiles = len(files) * 16
+            print(os.path.abspath('content/gdrive/My Drive/selective-inpainting_R-E/Data'))
             for file in files:
                 image = cv.imread(file)
-                height, width, channels = image.shape
-                if height > width:
-                    image = image[0:width, :]
-                else:
-                    image = image[:, 0:height]
-                image = cv.resize(image, (256, 256))
-                for i in range(4):
-                    for j in range(4):
-                        temp = image.copy()[i*64:(i+1)*64, j*64:(j+1)*64]  # crop the image to [64, 64, 3] format
+            height, width, channels = image.shape
+            if height > width:
+                image = image[0:width, :]
+            else:
+                image = image[:, 0:height]
+            image = cv.resize(image, (256, 256))
+            for i in range(4):
+                forj in range(4):
+            temp = image.copy()[i * 64:(i + 1) * 64, j * 64:(j + 1) * 64]  # crop the image to [64, 64, 3] format
 
-                        if count < totfiles/5*4:
-                            cv.imwrite('../../Data/{}/{}/{:04d}.bmp'.format(self.dataset_name, 'train', count), temp)
-                        else:
-                            cv.imwrite('../../Data/{}/{}/{:04d}.bmp'.format(self.dataset_name, 'val', count), temp)
-                        count += 1
+            if count < totfiles / 5 * 4:
+                cv.imwrite(
+                    'content/gdrive/My Drive/selective-inpainting_R-E/Data/{}/{}/{:04d}.bmp'.format(self.dataset_name,'train', count),temp)
+            else:
+                cv.imwrite(
+                    'content/gdrive/My Drive/selective-inpainting_R-E/Data/{}/{}/{:04d}.bmp'.format(self.dataset_name,'val', count), temp)
+            count += 1
 
     def _load_vub(self):
         print('Load {} dataset...'.format(self.dataset_name))
@@ -182,4 +187,5 @@ def Dataset(flags, dataset_name):
         return VUB(flags, dataset_name)
     else:
         raise NotImplementedError
+
 
