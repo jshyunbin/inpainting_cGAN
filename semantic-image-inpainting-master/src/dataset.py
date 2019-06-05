@@ -103,9 +103,9 @@ class VUB(object):
         self.dataset_name = dataset_name
         self.image_size = (64, 64, 3)
         self.num_trains, self.num_vals = 0, 0
-        self.vub_train_path = os.path.join('..\\..\\Data', self.dataset_name, 'train')
-        self.vub_val_path = os.path.join('..\\..\\Data', self.dataset_name, 'val')
-        self.vub_raw_data_path = os.path.join('..\\..\\Data', self.dataset_name)
+        self.vub_train_path = os.path.join('../../Data', self.dataset_name, 'train')
+        self.vub_val_path = os.path.join('../../Data', self.dataset_name, 'val')
+        self.vub_raw_data_path = os.path.join('../../Data', self.dataset_name)
         self._edit_vub()
         self._load_vub()
 
