@@ -65,7 +65,7 @@ class Solver(object):
                 print(' [! Load Failed...\n')
 
         while self.iter_time < self.flags.iters:
-            # samppling images and save them
+            # sampling images and save them
             self.sample(self.iter_time)
 
             # train_step

@@ -102,6 +102,7 @@ class VUB(object):
         self.flags = flags
         self.dataset_name = dataset_name
         self.image_size = (64, 64, 3)
+        self.input_height = self.input_width = 108
         self.num_trains, self.num_vals = 0, 0
         self.vub_train_path = os.path.join('..\\..\\Data', self.dataset_name, 'train')
         self.vub_val_path = os.path.join('..\\..\\Data', self.dataset_name, 'val')
@@ -151,25 +152,16 @@ class VUB(object):
         print('Load {} dataset SUCCESS!'.format(self.dataset_name))
 
     def train_next_batch(self, batch_size):
-        batch_indexs = np.random.choice(range(self.train_data.shape[0]), batch_size, replace=False)
-        batch_imgs = self.train_data[batch_indexs]
-
-        # resize (32, 32, 3) to (64, 64, 3) and random flip
-        batch_imgs_ = [utils.random_flip(
-            utils.transform(scipy.misc.imresize(batch_imgs[idx], (self.image_size[0], self.image_size[1]))))
-            for idx in range(batch_imgs.shape[0])]
-
-        return np.asarray(batch_imgs_)
+        batch_paths = np.random.choice(self.train_data, batch_size, replace=False)
+        batch_imgs = [utils.load_data(batch_path, input_height=self.input_height, input_width=self.input_width)
+                      for batch_path in batch_paths]
+        return np.asarray(batch_imgs)
 
     def val_next_batch(self, batch_size):
-        batch_indexs = np.random.choice(range(self.val_data.shape[0]), batch_size, replace=False)
-        batch_imgs = self.val_data[batch_indexs]
-
-        # resize (32, 32, 3) to (64, 64, 3)
-        batch_imgs_ = [utils.transform(scipy.misc.imresize(batch_imgs[idx], (self.image_size[0], self.image_size[1])))
-                       for idx in range(batch_imgs.shape[0])]
-
-        return np.asarray(batch_imgs_)
+        batch_paths = np.random.choice(self.val_data, batch_size, replace=False)
+        batch_imgs = [utils.load_data(batch_path, input_height=self.input_height, input_width=self.input_width)
+                      for batch_path in batch_paths]
+        return np.asarray(batch_imgs)
 
 
 # noinspection PyPep8Naming
