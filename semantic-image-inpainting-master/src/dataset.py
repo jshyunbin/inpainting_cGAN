@@ -10,7 +10,6 @@ import numpy as np
 import scipy.io
 import scipy.misc
 import cv2 as cv
-from matplotlib import pyplot as plt
 
 import utils as utils
 
