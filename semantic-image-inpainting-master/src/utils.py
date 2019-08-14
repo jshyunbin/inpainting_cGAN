@@ -52,9 +52,9 @@ def imread(path, is_gray_scale=False, img_size=None, img_format='float'):
     # TODO: image
     if img_format == 'float':
         if is_gray_scale:
-            img = cv.imread(path, flatten=True).astype(np.float)
+            img = cv.imread(path, 0).astype(np.float)
         else:
-            img = cv.imread(path, mode='RGB').astype(np.float)
+            img = cv.imread(path, 1).astype(np.float)
 
             if not (img.ndim == 3 and img.shape[2] == 3):
                 img = np.dstack((img, img, img))
@@ -64,7 +64,7 @@ def imread(path, is_gray_scale=False, img_size=None, img_format='float'):
         return img
 
     elif img_format == 'png':
-        img = cv.imread(path, mode='RGB')
+        img = cv.imread(path, 1)
         return img
 
 

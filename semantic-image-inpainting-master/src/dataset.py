@@ -10,8 +10,10 @@ import numpy as np
 import scipy.io
 import scipy.misc
 import cv2 as cv
-
 import utils as utils
+
+ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
+DATA_DIR = os.path.join(ROOT_DIR, '../../Data')
 
 
 class CelebA(object):
@@ -103,9 +105,9 @@ class VUB(object):
         self.image_size = (64, 64, 3)
         self.input_height = self.input_width = 108
         self.num_trains, self.num_vals = 0, 0
-        self.vub_train_path = os.path.join('gdrive/My Drive/selective-inpainting_R-E/Data', self.dataset_name,'train')
-        self.vub_val_path = os.path.join('gdrive/My Drive/selective-inpainting_R-E/Data', self.dataset_name,'val')
-        self.vub_raw_data_path = os.path.join('gdrive/My Drive/selective-inpainting_R-E/Data', self.dataset_name)
+        self.vub_train_path = os.path.join(DATA_DIR, self.dataset_name,'train')
+        self.vub_val_path = os.path.join(DATA_DIR, self.dataset_name,'val')
+        self.vub_raw_data_path = os.path.join(DATA_DIR, self.dataset_name)
         self._edit_vub()
         self._load_vub()
 
@@ -118,10 +120,10 @@ class VUB(object):
         if exists:
             return
         else:
-            files = utils.all_files_under('gdrive/My Drive/selective-inpainting_R-E/Data/{}/{}'.format(self.dataset_name, 'urban'))
+            files = utils.all_files_under(os.path.join(DATA_DIR, '{}/{}'.format(self.dataset_name, 'urban')))
             count = 0
             totfiles = len(files) * 16
-            print(os.path.abspath('gdrive/My Drive/selective-inpainting_R-E/Data'))
+            print(os.path.abspath(DATA_DIR))
             for file in files:
                 image = cv.imread(file)
                 height, width, channels = image.shape
@@ -132,12 +134,14 @@ class VUB(object):
                 image = cv.resize(image, (256, 256))
                 for i in range(4):
                     for j in range(4):
-                        temp = image.copy()[i * 64:(i + 1) * 64, j * 64:(j + 1) * 64]  # crop the image to [64, 64, 3] format
-
+                        temp = image.copy()[i * 64:(i + 1) * 64, j * 64:(j + 1) * 64]
+                        # crop the image to [64, 64, 3] format
                         if count < totfiles / 5 * 4:
-                            cv.imwrite('gdrive/My Drive/selective-inpainting_R-E/Data/{}/{}/{:04d}.bmp'.format(self.dataset_name,'train', count),temp)
+                            cv.imwrite(os.path.join(DATA_DIR, '{}/{}/{:04d}.bmp'.format(
+                                self.dataset_name, 'train', count)), temp)
                         else:
-                            cv.imwrite('gdrive/My Drive/selective-inpainting_R-E/Data/{}/{}/{:04d}.bmp'.format(self.dataset_name,'val', count), temp)
+                            cv.imwrite(os.path.join(DATA_DIR, '{}/{}/{:04d}.bmp'.format(
+                                self.dataset_name,'val', count)), temp)
                         count += 1
 
     def _load_vub(self):

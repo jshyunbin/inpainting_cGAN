@@ -6,6 +6,7 @@ import matplotlib as mpl
 # mpl.use('TkAgg')  # or whatever other backend that you want to solve Segmentation fault (core dumped)
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+import cv2 as cv
 
 # noinspection PyPep8Naming
 import tensorflow_utils as tf_utils
@@ -27,7 +28,7 @@ class DCGAN(object):
         print("Initialized DCGAN SUCCESS!")
 
     def _build_net(self):
-        self.Y = tf.placeholder(tf.float32, shape=[None, *self.image_size], name='output')
+        self.Y = tf.placeholder(tf.float32, shape=[None, 64, 64, 3], name='output')
         self.z = tf.placeholder(tf.float32, shape=[None, self.flags.z_dim], name='latent_vector')
 
         self.g_samples = self.generator(self.z)
@@ -160,7 +161,7 @@ class DCGAN(object):
 
     def plots(self, imgs_, iter_time, save_file):
         # reshape image from vector to (N, H, W, C)
-        imgs_fake = np.reshape(imgs_[0], (self.flags.sample_batch, *self.image_size))
+        imgs_fake = np.reshape(imgs_[0], (self.flags.sample_batch, 64, 64, 3))
 
         imgs = []
         for img in imgs_fake:
@@ -185,6 +186,7 @@ class DCGAN(object):
                 ax.set_xticklabels([])
                 ax.set_yticklabels([])
                 ax.set_aspect('equal')
+                """
                 if self.image_size[2] == 3:
                     plt.imshow((imgs[row_index * n_cols + col_index]).reshape(
                         self.image_size[0], self.image_size[1], self.image_size[2]), cmap='Greys_r')
@@ -193,6 +195,7 @@ class DCGAN(object):
                         self.image_size[0], self.image_size[1]), cmap='Greys_r')
                 else:
                     raise NotImplementedError
+                    """
 
         plt.savefig(save_file + '/sample_{}.png'.format(str(iter_time)), bbox_inches='tight')
         plt.close(fig)

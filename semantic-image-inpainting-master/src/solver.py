@@ -66,7 +66,7 @@ class Solver(object):
 
         while self.iter_time < self.flags.iters:
             # sampling images and save them
-            self.sample(self.iter_time)
+            # self.sample(self.iter_time)
 
             # train_step
             batch_imgs = self.dataset.train_next_batch(batch_size=self.flags.batch_size)
