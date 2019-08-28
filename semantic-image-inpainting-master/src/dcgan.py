@@ -52,12 +52,12 @@ class DCGAN(object):
         g_vars = tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES, scope='g_')
 
         # Optimizer
-        dis_op = tf.train.AdamOptimizer(learning_rate=self.flags.learning_rate, beta1=self.flags.beta1)\
+        dis_op = tf.train.AdamOptimizer(learning_rate=self.flags.learning_rate, beta1=self.flags.beta1) \
             .minimize(self.d_loss, var_list=d_vars)
         dis_ops = [dis_op] + self._dis_train_ops
         self.dis_optim = tf.group(*dis_ops)
 
-        gen_op = tf.train.AdamOptimizer(learning_rate=self.flags.learning_rate, beta1=self.flags.beta1)\
+        gen_op = tf.train.AdamOptimizer(learning_rate=self.flags.learning_rate, beta1=self.flags.beta1) \
             .minimize(self.g_loss, var_list=g_vars)
         gen_ops = [gen_op] + self._gen_train_ops
         self.gen_optim = tf.group(*gen_ops)
@@ -76,7 +76,7 @@ class DCGAN(object):
             data_flatten = flatten(data)
 
             # 4 x 4
-            h0_linear = tf_utils.linear(data_flatten, 4*4*self.gen_c[0], name='h0_linear')
+            h0_linear = tf_utils.linear(data_flatten, 4 * 4 * self.gen_c[0], name='h0_linear')
             h0_reshape = tf.reshape(h0_linear, [tf.shape(h0_linear)[0], 4, 4, self.gen_c[0]])
             h0_batchnorm = tf_utils.batch_norm(h0_reshape, name='h0_batchnorm', _ops=self._gen_train_ops)
             h0_relu = tf.nn.relu(h0_batchnorm, name='h0_relu')
@@ -172,30 +172,50 @@ class DCGAN(object):
         n_cols, n_rows = int(np.sqrt(len(imgs))), int(np.sqrt(len(imgs)))
         cell_size_h, cell_size_w = imgs[0].shape[0] * scale, imgs[0].shape[1] * scale
 
-        fig = plt.figure(figsize=(cell_size_w * n_cols, cell_size_h * n_rows))  # (column, row)
-        gs = gridspec.GridSpec(n_rows, n_cols)  # (row, column)
-        gs.update(wspace=margin, hspace=margin)
-
         imgs = [utils.inverse_transform(imgs[idx]) for idx in range(len(imgs))]
 
-        # save more bigger image
-        for col_index in range(n_cols):
-            for row_index in range(n_rows):
-                ax = plt.subplot(gs[row_index * n_cols + col_index])
-                plt.axis('off')
-                ax.set_xticklabels([])
-                ax.set_yticklabels([])
-                ax.set_aspect('equal')
-                """
-                if self.image_size[2] == 3:
-                    plt.imshow((imgs[row_index * n_cols + col_index]).reshape(
-                        self.image_size[0], self.image_size[1], self.image_size[2]), cmap='Greys_r')
-                elif self.image_size[2] == 1:
-                    plt.imshow((imgs[row_index * n_cols + col_index]).reshape(
-                        self.image_size[0], self.image_size[1]), cmap='Greys_r')
-                else:
-                    raise NotImplementedError
-                    """
+        output = (imgs[0]).reshape(self.image_size[0], self.image_size[1], self.image_size[2])
+        for row_index in range(n_rows - 1):
+            output = cv.vconcat([output, (imgs[(row_index + 1) * n_cols]).reshape(self.image_size[0],
+                                                                                  self.image_size[1],
+                                                                                  self.image_size[2])])
 
-        plt.savefig(save_file + '/sample_{}.png'.format(str(iter_time)), bbox_inches='tight')
-        plt.close(fig)
+        for col_index in range(n_cols - 1):
+            out = (imgs[col_index + 1]).reshape(self.image_size[0], self.image_size[1], self.image_size[2])
+            for row_index in range(n_rows - 1):
+                out = cv.vconcat([out, (imgs[(row_index + 1) * n_cols + col_index + 1]).reshape(self.image_size[0],
+                                                                                                self.image_size[1],
+                                                                                                self.image_size[2])])
+            output = cv.hconcat([output, out])
+
+        output = np.uint8(output*255.0)
+        print(np.min(output), np.max(output))
+
+        cv.imwrite(save_file + '/sample_{}.png'.format(str(iter_time)), output)
+        # fig = plt.figure(figsize=(cell_size_w * n_cols, cell_size_h * n_rows))  # (column, row)
+        # gs = gridspec.GridSpec(n_rows, n_cols)  # (row, column)
+        # gs.update(wspace=margin, hspace=margin)
+        #
+        # imgs = [utils.inverse_transform(imgs[idx]) for idx in range(len(imgs))]
+        #
+        # # save more bigger image
+        # for col_index in range(n_cols):
+        #     for row_index in range(n_rows):
+        #         ax = plt.subplot(gs[row_index * n_cols + col_index])
+        #         plt.axis('off')
+        #         ax.set_xticklabels([])
+        #         ax.set_yticklabels([])
+        #         ax.set_aspect('equal')
+        #         """
+        #         if self.image_size[2] == 3:
+        #             plt.imshow((imgs[row_index * n_cols + col_index]).reshape(
+        #                 self.image_size[0], self.image_size[1], self.image_size[2]), cmap='Greys_r')
+        #         elif self.image_size[2] == 1:
+        #             plt.imshow((imgs[row_index * n_cols + col_index]).reshape(
+        #                 self.image_size[0], self.image_size[1]), cmap='Greys_r')
+        #         else:
+        #             raise NotImplementedError
+        #             """
+        #
+        # plt.savefig(save_file + '/sample_{}.png'.format(str(iter_time)), bbox_inches='tight')
+        # plt.close(fig)

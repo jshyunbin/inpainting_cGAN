@@ -66,7 +66,7 @@ class Solver(object):
 
         while self.iter_time < self.flags.iters:
             # sampling images and save them
-            # self.sample(self.iter_time)
+            self.sample(self.iter_time)
 
             # train_step
             batch_imgs = self.dataset.train_next_batch(batch_size=self.flags.batch_size)
@@ -100,8 +100,8 @@ class Solver(object):
 
     def sample(self, iter_time):
         if np.mod(iter_time, self.flags.sample_freq) == 0:
-            # imgs = self.model.sample_imgs()
-            # self.model.plots(imgs, iter_time, self.sample_out_dir)
+            imgs = self.model.sample_imgs()
+            self.model.plots(imgs, iter_time, self.sample_out_dir)
 
             imgs = self.dataset.train_next_batch(batch_size=self.flags.sample_batch)
             self.model.plots([imgs], iter_time, self.sample_out_dir)
