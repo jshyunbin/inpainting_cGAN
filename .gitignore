@@ -5,3 +5,6 @@
 # Datasets
 Data/train/
 Data/val/
+
+# sample images
+semantic-image-inpainting-master/sample*.png

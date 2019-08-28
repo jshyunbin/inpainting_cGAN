@@ -12,7 +12,7 @@ from solver import Solver
 FLAGS = tf.flags.FLAGS
 
 tf.flags.DEFINE_string('gpu_index', '0', 'gpu index, default: 0')
-tf.flags.DEFINE_integer('batch_size', 256, 'batch size for one feed forwrad, default: 256')
+tf.flags.DEFINE_integer('batch_size', 256, 'batch size for one feed forward, default: 256')
 tf.flags.DEFINE_string('dataset', 'vub', 'dataset name for choice [celebA|svhn|vub], default: vub')
 
 tf.flags.DEFINE_bool('is_train', False, 'training or inference mode, default: False')
@@ -27,6 +27,8 @@ tf.flags.DEFINE_integer('sample_freq', 500, 'sample frequency for saving image, 
 tf.flags.DEFINE_integer('sample_batch', 64, 'number of sampling images for check generator quality, default: 64')
 tf.flags.DEFINE_string('load_model', None,
                        'folder of saved model that you wish to test, (e.g. 20180704-1736), default: None')
+
+tf.flags.DEFINE_integer('y_dim', 0, 'dimention of y label, default: 0')
 
 
 def main(_):

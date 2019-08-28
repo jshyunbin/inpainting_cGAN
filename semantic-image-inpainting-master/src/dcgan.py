@@ -2,6 +2,7 @@ import collections
 import numpy as np
 import tensorflow as tf
 from tensorflow.contrib.layers import flatten
+import math
 import matplotlib as mpl
 # mpl.use('TkAgg')  # or whatever other backend that you want to solve Segmentation fault (core dumped)
 import matplotlib.pyplot as plt
@@ -11,6 +12,22 @@ import cv2 as cv
 # noinspection PyPep8Naming
 import tensorflow_utils as tf_utils
 import utils as utils
+
+
+if "concat_v2" in dir(tf):
+    def concat(tensors, axis, *args, **kwargs):
+        return tf.concat_v2(tensors, axis, *args, **kwargs)
+else:
+    def concat(tensors, axis, *args, **kwargs):
+        return tf.concat(tensors, axis, *args, **kwargs)
+
+
+def conv_cond_concat(x, y):
+    """Concatenate conditioning vector on feature map axis."""
+    x_shapes = x.get_shape()
+    y_shapes = y.get_shape()
+    return concat([
+        x, y*tf.ones([x_shapes[0], x_shapes[1], x_shapes[2], y_shapes[3]])], 3)
 
 
 class DCGAN(object):
@@ -68,37 +85,75 @@ class DCGAN(object):
 
         self.summary_op = tf.summary.merge_all()
 
-    def generator(self, data, name='g_', is_reuse=False):
+    def generator(self, data, y=None, name='g_', is_reuse=False):
         with tf.variable_scope(name) as scope:
             if is_reuse is True:
                 scope.reuse_variables()
 
             data_flatten = flatten(data)
 
-            # 4 x 4
-            h0_linear = tf_utils.linear(data_flatten, 4 * 4 * self.gen_c[0], name='h0_linear')
-            h0_reshape = tf.reshape(h0_linear, [tf.shape(h0_linear)[0], 4, 4, self.gen_c[0]])
-            h0_batchnorm = tf_utils.batch_norm(h0_reshape, name='h0_batchnorm', _ops=self._gen_train_ops)
-            h0_relu = tf.nn.relu(h0_batchnorm, name='h0_relu')
+            if not self.flags.y_dim:
+                # 4 x 4
+                h0_linear = tf_utils.linear(data_flatten, 4 * 4 * self.gen_c[0], name='h0_linear')
+                h0_reshape = tf.reshape(h0_linear, [tf.shape(h0_linear)[0], 4, 4, self.gen_c[0]])
+                h0_batchnorm = tf_utils.batch_norm(h0_reshape, name='h0_batchnorm', _ops=self._gen_train_ops)
+                h0_relu = tf.nn.relu(h0_batchnorm, name='h0_relu')
 
-            # 8 x 8
-            h1_deconv = tf_utils.deconv2d(h0_relu, self.gen_c[1], name='h1_deconv2d')
-            h1_batchnorm = tf_utils.batch_norm(h1_deconv, name='h1_batchnorm', _ops=self._gen_train_ops)
-            h1_relu = tf.nn.relu(h1_batchnorm, name='h1_relu')
+                # 8 x 8
+                h1_deconv = tf_utils.deconv2d(h0_relu, self.gen_c[1], name='h1_deconv2d')
+                h1_batchnorm = tf_utils.batch_norm(h1_deconv, name='h1_batchnorm', _ops=self._gen_train_ops)
+                h1_relu = tf.nn.relu(h1_batchnorm, name='h1_relu')
 
-            # 16 x 16
-            h2_deconv = tf_utils.deconv2d(h1_relu, self.gen_c[2], name='h2_deconv2d')
-            h2_batchnorm = tf_utils.batch_norm(h2_deconv, name='h2_batchnorm', _ops=self._gen_train_ops)
-            h2_relu = tf.nn.relu(h2_batchnorm, name='h2_relu')
+                # 16 x 16
+                h2_deconv = tf_utils.deconv2d(h1_relu, self.gen_c[2], name='h2_deconv2d')
+                h2_batchnorm = tf_utils.batch_norm(h2_deconv, name='h2_batchnorm', _ops=self._gen_train_ops)
+                h2_relu = tf.nn.relu(h2_batchnorm, name='h2_relu')
 
-            # 32 x 32
-            h3_deconv = tf_utils.deconv2d(h2_relu, self.gen_c[3], name='h3_deconv2d')
-            h3_batchnorm = tf_utils.batch_norm(h3_deconv, name='h3_batchnorm', _ops=self._gen_train_ops)
-            h3_relu = tf.nn.relu(h3_batchnorm, name='h3_relu')
+                # 32 x 32
+                h3_deconv = tf_utils.deconv2d(h2_relu, self.gen_c[3], name='h3_deconv2d')
+                h3_batchnorm = tf_utils.batch_norm(h3_deconv, name='h3_batchnorm', _ops=self._gen_train_ops)
+                h3_relu = tf.nn.relu(h3_batchnorm, name='h3_relu')
 
-            # 64 x 64
-            output = tf_utils.deconv2d(h3_relu, self.image_size[2], name='h4_deconv2d')
-            return tf.nn.tanh(output)
+                # 64 x 64
+                output = tf_utils.deconv2d(h3_relu, self.image_size[2], name='h4_deconv2d')
+                return tf.nn.tanh(output)
+
+            else:
+                yb = tf.reshape(y, [self.flags.batch_size, 1, 1, self.flags.y_dim])
+                z = concat([data_flatten, y], 1)
+
+                # 4 x 4
+                h0_linear = tf_utils.linear(data_flatten, 4 * 4 * self.gen_c[0], name='h0_linear')
+                h0_reshape = tf.reshape(h0_linear, [tf.shape(h0_linear)[0], 4, 4, self.gen_c[0]])
+                h0_batchnorm = tf_utils.batch_norm(h0_reshape, name='h0_batchnorm', _ops=self._gen_train_ops)
+                h0_relu = tf.nn.relu(h0_batchnorm, name='h0_relu')
+                h0 = conv_cond_concat(h0_relu, yb)
+
+                # 8 x 8
+                h1_deconv = tf_utils.deconv2d(h0, self.gen_c[1], name='h1_deconv2d')
+                h1_batchnorm = tf_utils.batch_norm(h1_deconv, name='h1_batchnorm', _ops=self._gen_train_ops)
+                h1_relu = tf.nn.relu(h1_batchnorm, name='h1_relu')
+                h1 = conv_cond_concat(h1_relu, yb)
+
+                # 16 x 16
+                h2_deconv = tf_utils.deconv2d(h1, self.gen_c[2], name='h2_deconv2d')
+                h2_batchnorm = tf_utils.batch_norm(h2_deconv, name='h2_batchnorm', _ops=self._gen_train_ops)
+                h2_relu = tf.nn.relu(h2_batchnorm, name='h2_relu')
+                h2 = conv_cond_concat(h2_relu, yb)
+
+                # 32 x 32
+                h3_deconv = tf_utils.deconv2d(h2, self.gen_c[3], name='h3_deconv2d')
+                h3_batchnorm = tf_utils.batch_norm(h3_deconv, name='h3_batchnorm', _ops=self._gen_train_ops)
+                h3_relu = tf.nn.relu(h3_batchnorm, name='h3_relu')
+                h3 = conv_cond_concat(h3_relu, yb)
+
+                # 64 x 64
+                output = tf_utils.deconv2d(h3, self.image_size[2], name='h4_deconv2d')
+                return tf.nn.tanh(output)
+
+                # do something...
+
+
 
     def discriminator(self, data, name='d_', is_reuse=False):
         with tf.variable_scope(name) as scope:
