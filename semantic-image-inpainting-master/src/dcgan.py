@@ -35,6 +35,7 @@ class DCGAN(object):
         self.sess = sess
         self.flags = flags
         self.image_size = image_size
+        self.batch_size = self.flags.batch_size
 
         self._gen_train_ops, self._dis_train_ops = [], []
         self.gen_c = [1024, 512, 256, 128]  # 4, 8, 16, 32
@@ -119,7 +120,7 @@ class DCGAN(object):
                 return tf.nn.tanh(output)
 
             else:
-                yb = tf.reshape(y, [self.flags.batch_size, 1, 1, self.flags.y_dim])
+                yb = tf.reshape(y, [self.batch_size, 1, 1, self.flags.y_dim])
                 z = concat([data_flatten, y], 1)
 
                 # 4 x 4
@@ -151,41 +152,70 @@ class DCGAN(object):
                 output = tf_utils.deconv2d(h3, self.image_size[2], name='h4_deconv2d')
                 return tf.nn.tanh(output)
 
-                # do something...
-
-
-
-    def discriminator(self, data, name='d_', is_reuse=False):
+    def discriminator(self, data, y=None, name='d_', is_reuse=False):
         with tf.variable_scope(name) as scope:
             if is_reuse is True:
                 scope.reuse_variables()
 
-            # 64 -> 32
-            h0_conv = tf_utils.conv2d(data, self.dis_c[0], name='h0_conv2d')
-            h0_lrelu = tf_utils.lrelu(h0_conv, name='h0_lrelu')
+            if not self.flags.y_dim:
+                # 64 -> 32
+                h0_conv = tf_utils.conv2d(data, self.dis_c[0], name='h0_conv2d')
+                h0_lrelu = tf_utils.lrelu(h0_conv, name='h0_lrelu')
 
-            # 32 -> 16
-            h1_conv = tf_utils.conv2d(h0_lrelu, self.dis_c[1], name='h1_conv2d')
-            h1_batchnorm = tf_utils.batch_norm(h1_conv, name='h1_batchnorm', _ops=self._dis_train_ops)
-            h1_lrelu = tf_utils.lrelu(h1_batchnorm, name='h1_lrelu')
+                # 32 -> 16
+                h1_conv = tf_utils.conv2d(h0_lrelu, self.dis_c[1], name='h1_conv2d')
+                h1_batchnorm = tf_utils.batch_norm(h1_conv, name='h1_batchnorm', _ops=self._dis_train_ops)
+                h1_lrelu = tf_utils.lrelu(h1_batchnorm, name='h1_lrelu')
 
-            # 16 -> 8
-            h2_conv = tf_utils.conv2d(h1_lrelu, self.dis_c[2], name='h2_conv2d')
-            h2_batchnorm = tf_utils.batch_norm(h2_conv, name='h2_batchnorm', _ops=self._dis_train_ops)
-            h2_lrelu = tf_utils.lrelu(h2_batchnorm, name='h2_lrelu')
+                # 16 -> 8
+                h2_conv = tf_utils.conv2d(h1_lrelu, self.dis_c[2], name='h2_conv2d')
+                h2_batchnorm = tf_utils.batch_norm(h2_conv, name='h2_batchnorm', _ops=self._dis_train_ops)
+                h2_lrelu = tf_utils.lrelu(h2_batchnorm, name='h2_lrelu')
 
-            # 8 -> 4
-            h3_conv = tf_utils.conv2d(h2_lrelu, self.dis_c[3], name='h3_conv2d')
-            h3_batchnorm = tf_utils.batch_norm(h3_conv, name='h3_batchnorm', _ops=self._dis_train_ops)
-            h3_lrelu = tf_utils.lrelu(h3_batchnorm, name='h3_lrelu')
+                # 8 -> 4
+                h3_conv = tf_utils.conv2d(h2_lrelu, self.dis_c[3], name='h3_conv2d')
+                h3_batchnorm = tf_utils.batch_norm(h3_conv, name='h3_batchnorm', _ops=self._dis_train_ops)
+                h3_lrelu = tf_utils.lrelu(h3_batchnorm, name='h3_lrelu')
 
-            h3_flatten = flatten(h3_lrelu)
-            h4_linear = tf_utils.linear(h3_flatten, 1, name='h4_linear')
+                h3_flatten = flatten(h3_lrelu)
+                h4_linear = tf_utils.linear(h3_flatten, 1, name='h4_linear')
 
-            return tf.nn.sigmoid(h4_linear), h4_linear
+                return tf.nn.sigmoid(h4_linear), h4_linear
+
+            else:
+                yb = tf.reshape(y, [self.batch_size, 1, 1, self.flags.y_dim])
+                x = conv_cond_concat(data, yb)
+
+                h0_conv = tf_utils.conv2d(x, self.dis_c[0] + self.flags.y_dim, name='h0_conv2d')
+                h0_lrelu = tf_utils.lrelu(h0_conv, name='h0_lrelu')
+                h0 = conv_cond_concat(h0_lrelu, yb)
+
+                # 32 -> 16
+                h1_conv = tf_utils.conv2d(h0, self.dis_c[1] + self.flags.y_dim, name='h1_conv2d')
+                h1_batchnorm = tf_utils.batch_norm(h1_conv, name='h1_batchnorm', _ops=self._dis_train_ops)
+                h1_lrelu = tf_utils.lrelu(h1_batchnorm, name='h1_lrelu')
+                h1 = conv_cond_concat(h1_lrelu, yb)
+
+                # 16 -> 8
+                h2_conv = tf_utils.conv2d(h1, self.dis_c[2], name='h2_conv2d')
+                h2_batchnorm = tf_utils.batch_norm(h2_conv, name='h2_batchnorm', _ops=self._dis_train_ops)
+                h2_lrelu = tf_utils.lrelu(h2_batchnorm, name='h2_lrelu')
+                h2 = conv_cond_concat(h2_lrelu, yb)
+
+                # 8 -> 4
+                h3_conv = tf_utils.conv2d(h2, self.dis_c[3], name='h3_conv2d')
+                h3_batchnorm = tf_utils.batch_norm(h3_conv, name='h3_batchnorm', _ops=self._dis_train_ops)
+                h3_lrelu = tf_utils.lrelu(h3_batchnorm, name='h3_lrelu')
+
+                h3_flatten = flatten(h3_lrelu)
+                h3 = concat([h3_flatten, y], 1)
+
+                h4_linear = tf_utils.linear(h3, 1, name='h4_linear')
+
+                return tf.nn.sigmoid(h4_linear), h4_linear
 
     def train_step(self, imgs):
-        feed = {self.z: self.sample_z(num=self.flags.batch_size), self.Y: imgs}
+        feed = {self.z: self.sample_z(num=self.batch_size), self.Y: imgs}
 
         _, d_loss = self.sess.run([self.dis_optim, self.d_loss], feed_dict=feed)
         _, g_loss = self.sess.run([self.gen_optim, self.g_loss], feed_dict=feed)
@@ -207,7 +237,7 @@ class DCGAN(object):
     def print_info(self, loss, iter_time):
         if np.mod(iter_time, self.flags.print_freq) == 0:
             ord_output = collections.OrderedDict([('cur_iter', iter_time), ('tar_iters', self.flags.iters),
-                                                  ('batch_size', self.flags.batch_size),
+                                                  ('batch_size', self.batch_size),
                                                   ('d_loss', loss[0]), ('g_loss', loss[1]),
                                                   ('dataset', self.flags.dataset),
                                                   ('gpu_index', self.flags.gpu_index)])
