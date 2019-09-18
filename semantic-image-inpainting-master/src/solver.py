@@ -62,7 +62,7 @@ class Solver(object):
             if self.load_model():
                 print(' [*] Load SUCCESS!\n')
             else:
-                print(' [! Load Failed...\n')
+                print(' [!] Load Failed...\n')
 
         while self.iter_time < self.flags.iters:
             # sampling images and save them

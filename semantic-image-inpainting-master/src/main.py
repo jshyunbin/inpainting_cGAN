@@ -28,7 +28,7 @@ tf.flags.DEFINE_integer('sample_batch', 64, 'number of sampling images for check
 tf.flags.DEFINE_string('load_model', None,
                        'folder of saved model that you wish to test, (e.g. 20180704-1736), default: None')
 
-tf.flags.DEFINE_integer('y_dim', 0, 'dimention of y label, default: 0')
+tf.flags.DEFINE_integer('y_dim', 0, 'dimension of y label, default: 0')
 
 
 def main(_):

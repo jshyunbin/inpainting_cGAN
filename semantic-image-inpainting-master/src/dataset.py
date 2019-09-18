@@ -5,6 +5,7 @@
 # Email: sbkim0407@gmail.com
 # ---------------------------------------------------------
 import os
+import shutil
 import time
 import numpy as np
 import scipy.io
@@ -24,8 +25,15 @@ class CelebA(object):
         self.input_height = self.input_width = 108
         self.num_trains, self.num_vals = 0, 0
 
+        self.celeba_dataset_path = os.path.join('../../Data', self.dataset_name, 'img_align_celeba')
         self.celeba_train_path = os.path.join('../../Data', self.dataset_name, 'train')
         self.celeba_val_path = os.path.join('../../Data', self.dataset_name, 'val')
+
+        if not os.path.isfile(os.path.join('../../Data', self.dataset_name, 'train')):
+            for i in range(141819):
+                shutil.move(os.path.join(self.celeba_dataset_path, '{:0>6}.jpg'.format(i)), self.celeba_train_path)
+            for i in range(141820, 202600):
+                shutil.move(os.path.join(self.celeba_dataset_path, '{:0>6}.jpg'.format(i)), self.celeba_val_path)
         self._load_celeba()
 
         np.random.seed(seed=int(time.time()))  # set random seed according to the current time
