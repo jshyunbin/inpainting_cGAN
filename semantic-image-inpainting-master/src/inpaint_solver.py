@@ -51,7 +51,8 @@ class Solver(object):
         for num_try in range(self.flags.num_try):
             self.model.preprocess()  # initialize memory for inpaint model
 
-            imgs = self.dataset.val_next_batch(batch_size=self.flags.sample_batch)  # random select in validation data
+            imgs, y_label = self.dataset.val_next_batch(batch_size=self.flags.sample_batch)  # random select in
+            # validation data
             best_loss = np.ones(self.flags.sample_batch) * 1e10
             best_outs = np.zeros_like(imgs)
 

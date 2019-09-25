@@ -48,8 +48,12 @@ class DCGAN(object):
     def _build_net(self):
         self.Y = tf.placeholder(tf.float32, shape=[None, 64, 64, 3], name='output')
         self.z = tf.placeholder(tf.float32, shape=[None, self.flags.z_dim], name='latent_vector')
+        if self.flags.y_dim:
+            self.Y_label = tf.placeholder(tf.float32, shape=[None, self.flags.y_dim], name='y label')
+        else:
+            self.Y_label = None
 
-        self.g_samples = self.generator(self.z)
+        self.g_samples = self.generator(self.z, self.Y_label)
         d_real, d_logit_real = self.discriminator(self.Y)
         d_fake, d_logit_fake = self.discriminator(self.g_samples, is_reuse=True)
 
@@ -86,7 +90,7 @@ class DCGAN(object):
 
         self.summary_op = tf.summary.merge_all()
 
-    def generator(self, data, y=None, name='g_', is_reuse=False):
+    def generator(self, data, y, name='g_', is_reuse=False):
         with tf.variable_scope(name) as scope:
             if is_reuse is True:
                 scope.reuse_variables()
@@ -124,7 +128,7 @@ class DCGAN(object):
                 z = concat([data_flatten, y], 1)
 
                 # 4 x 4
-                h0_linear = tf_utils.linear(data_flatten, 4 * 4 * self.gen_c[0], name='h0_linear')
+                h0_linear = tf_utils.linear(z, 4 * 4 * self.gen_c[0], name='h0_linear')
                 h0_reshape = tf.reshape(h0_linear, [tf.shape(h0_linear)[0], 4, 4, self.gen_c[0]])
                 h0_batchnorm = tf_utils.batch_norm(h0_reshape, name='h0_batchnorm', _ops=self._gen_train_ops)
                 h0_relu = tf.nn.relu(h0_batchnorm, name='h0_relu')
@@ -214,8 +218,8 @@ class DCGAN(object):
 
                 return tf.nn.sigmoid(h4_linear), h4_linear
 
-    def train_step(self, imgs):
-        feed = {self.z: self.sample_z(num=self.batch_size), self.Y: imgs}
+    def train_step(self, imgs, index):
+        feed = {self.z: self.sample_z(num=self.batch_size), self.Y: imgs, self.Y_label: index}
 
         _, d_loss = self.sess.run([self.dis_optim, self.d_loss], feed_dict=feed)
         _, g_loss = self.sess.run([self.gen_optim, self.g_loss], feed_dict=feed)

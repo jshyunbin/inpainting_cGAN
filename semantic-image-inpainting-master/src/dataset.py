@@ -48,21 +48,38 @@ class CelebA(object):
         self.num_vals = len(self.val_data)
 
         celeba_attr_f = open("../../Data/celebA/list_attr_celeba.txt", "r").readlines()
-        self.y_label = [[0 if i == '-1' else 1 for i in x.split()[1:]] for x in celeba_attr_f[2:]]
+        if self.flags.y_ind:
+            self.y_label = [[0 if i == '-1' else 1 for i in x.split()[1:]] for x in celeba_attr_f[2:]]
+        else:
+            self.y_label = None
 
         print('Load {} dataset SUCCESS!'.format(self.dataset_name))
 
     def train_next_batch(self, batch_size):
-        batch_paths = np.random.choice(self.train_data, batch_size, replace=False)
+        if self.flags.y_ind:
+            data = [(x, y) for x in self.train_data for y in self.y_label[:len(self.train_data)]]
+            batch_datas = np.random.choice(data, batch_size, replace=False)
+            batch_labels = [x[1] for x in batch_datas]
+            batch_paths = [x[0] for x in batch_datas]
+        else:
+            batch_paths = np.random.choice(self.train_data, batch_size, replace=False)
+            batch_labels = None
         batch_imgs = [utils.load_data(batch_path, input_height=self.input_height, input_width=self.input_width)
                       for batch_path in batch_paths]
-        return np.asarray(batch_imgs)
+        return np.asarray(batch_imgs), batch_labels
 
     def val_next_batch(self, batch_size):
-        batch_paths = np.random.choice(self.val_data, batch_size, replace=False)
+        if self.flags.y_ind:
+            data = [(x, y) for x in self.val_data for y in self.y_label[len(self.train_data):]]
+            batch_datas = np.random.choice(data, batch_size, replace=False)
+            batch_labels = [x[1] for x in batch_datas]
+            batch_paths = [x[0] for x in batch_datas]
+        else:
+            batch_paths = np.random.choice(self.val_data, batch_size, replace=False)
+            batch_labels = None
         batch_imgs = [utils.load_data(batch_path, input_height=self.input_height, input_width=self.input_width)
                       for batch_path in batch_paths]
-        return np.asarray(batch_imgs)
+        return np.asarray(batch_imgs), batch_labels
 
 
 class SVHN(object):

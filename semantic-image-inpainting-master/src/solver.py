@@ -69,8 +69,8 @@ class Solver(object):
             self.sample(self.iter_time)
 
             # train_step
-            batch_imgs = self.dataset.train_next_batch(batch_size=self.flags.batch_size)
-            loss, summary = self.model.train_step(batch_imgs)
+            batch_imgs, batch_y_ind = self.dataset.train_next_batch(batch_size=self.flags.batch_size)
+            loss, summary = self.model.train_step(batch_imgs, batch_y_ind)
             self.model.print_info(loss, self.iter_time)
             self.train_writer.add_summary(summary, self.iter_time)
             self.train_writer.flush()
