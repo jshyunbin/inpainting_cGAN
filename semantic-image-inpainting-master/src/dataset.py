@@ -30,6 +30,8 @@ class CelebA(object):
         self.celeba_val_path = os.path.join('../../Data', self.dataset_name, 'val')
 
         if not os.path.isfile(os.path.join('../../Data', self.dataset_name, 'train')):
+            os.mkdir(self.celeba_train_path)
+            os.mkdir(self.celeba_val_path)
             for i in range(1, 141820):
                 shutil.move(os.path.join(self.celeba_dataset_path, '{:0>6}.jpg'.format(i)), self.celeba_train_path)
             for i in range(141820, 202600):
