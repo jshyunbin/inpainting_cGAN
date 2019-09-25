@@ -46,6 +46,10 @@ class CelebA(object):
 
         self.val_data = utils.all_files_under(self.celeba_val_path)
         self.num_vals = len(self.val_data)
+
+        celeba_attr_f = open("../../Data/celebA/list_attr_celeba.txt", "r").readlines()
+        self.y_label = [[0 if i == '-1' else 1 for i in x.split()[1:]] for x in celeba_attr_f[2:]]
+
         print('Load {} dataset SUCCESS!'.format(self.dataset_name))
 
     def train_next_batch(self, batch_size):
