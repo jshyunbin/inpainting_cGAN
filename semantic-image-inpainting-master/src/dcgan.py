@@ -54,7 +54,7 @@ class DCGAN(object):
             self.Y_label = None
 
         self.g_samples = self.generator(self.z, self.Y_label)
-        d_real, d_logit_real = self.discriminator(self.Y)
+        d_real, d_logit_real = self.discriminator(self.Y, self.Y_label)
         d_fake, d_logit_fake = self.discriminator(self.g_samples, is_reuse=True)
 
         # discriminator loss
@@ -156,7 +156,7 @@ class DCGAN(object):
                 output = tf_utils.deconv2d(h3, self.image_size[2], name='h4_deconv2d')
                 return tf.nn.tanh(output)
 
-    def discriminator(self, data, y=None, name='d_', is_reuse=False):
+    def discriminator(self, data, y, name='d_', is_reuse=False):
         with tf.variable_scope(name) as scope:
             if is_reuse is True:
                 scope.reuse_variables()
