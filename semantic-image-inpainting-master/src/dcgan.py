@@ -49,7 +49,7 @@ class DCGAN(object):
         self.Y = tf.placeholder(tf.float32, shape=[None, 64, 64, 3], name='output')
         self.z = tf.placeholder(tf.float32, shape=[None, self.flags.z_dim], name='latent_vector')
         if self.flags.y_dim:
-            self.Y_label = tf.placeholder(tf.float32, shape=[None, self.flags.y_dim], name='y label')
+            self.Y_label = tf.placeholder(tf.float32, shape=[None, self.flags.y_dim], name='y_label')
         else:
             self.Y_label = None
 
