@@ -51,7 +51,7 @@ class CelebA(object):
         self.num_vals = len(self.val_data)
 
         celeba_attr_f = open("../../Data/celebA/list_attr_celeba.txt", "r").readlines()
-        if self.flags.y_ind:
+        if self.flags.y_dim:
             self.y_label = [[0 if i == '-1' else 1 for i in x.split()[1:]] for x in celeba_attr_f[2:]]
         else:
             self.y_label = None
@@ -59,7 +59,7 @@ class CelebA(object):
         print('Load {} dataset SUCCESS!'.format(self.dataset_name))
 
     def train_next_batch(self, batch_size):
-        if self.flags.y_ind:
+        if self.flags.y_dim:
             data = [(x, y) for x in self.train_data for y in self.y_label[:len(self.train_data)]]
             batch_datas = np.random.choice(data, batch_size, replace=False)
             batch_labels = [x[1] for x in batch_datas]
@@ -72,7 +72,7 @@ class CelebA(object):
         return np.asarray(batch_imgs), batch_labels
 
     def val_next_batch(self, batch_size):
-        if self.flags.y_ind:
+        if self.flags.y_dim:
             data = [(x, y) for x in self.val_data for y in self.y_label[len(self.train_data):]]
             batch_datas = np.random.choice(data, batch_size, replace=False)
             batch_labels = [x[1] for x in batch_datas]
