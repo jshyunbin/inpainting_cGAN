@@ -10,3 +10,6 @@ Data/vub
 
 # sample images
 semantic-image-inpainting-master/sample*.png
+
+# python cached files
+semantic-image-inpainting-master/src/*.pyc
