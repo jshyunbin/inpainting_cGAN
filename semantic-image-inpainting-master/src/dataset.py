@@ -5,7 +5,6 @@
 # Email: sbkim0407@gmail.com
 # ---------------------------------------------------------
 import os
-import shutil
 import time
 import numpy as np
 import scipy.io
@@ -56,12 +55,14 @@ class CelebA(object):
         else:
             self.y_label = None
 
+        self.train_data_with_label = [(x, y) for x in self.train_data for y in self.y_label[:len(self.train_data)]]
+        self.val_data_with_label = [(x, y) for x in self.val_data for y in self.y_label[len(self.train_data):]]
+
         print('Load {} dataset SUCCESS!'.format(self.dataset_name))
 
     def train_next_batch(self, batch_size):
         if self.flags.y_dim:
-            data = [(x, y) for x in self.train_data for y in self.y_label[:len(self.train_data)]]
-            batch_datas = np.random.choice(data, batch_size, replace=False)
+            batch_datas = np.random.choice(self.train_data_with_label, batch_size, replace=False)
             batch_labels = [x[1] for x in batch_datas]
             batch_paths = [x[0] for x in batch_datas]
         else:
@@ -73,8 +74,7 @@ class CelebA(object):
 
     def val_next_batch(self, batch_size):
         if self.flags.y_dim:
-            data = [(x, y) for x in self.val_data for y in self.y_label[len(self.train_data):]]
-            batch_datas = np.random.choice(data, batch_size, replace=False)
+            batch_datas = np.random.choice(self.val_data_with_label, batch_size, replace=False)
             batch_labels = [x[1] for x in batch_datas]
             batch_paths = [x[0] for x in batch_datas]
         else:
