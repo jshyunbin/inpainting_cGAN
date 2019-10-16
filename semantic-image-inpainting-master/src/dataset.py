@@ -52,11 +52,14 @@ class CelebA(object):
         celeba_attr_f = open("../../Data/celebA/list_attr_celeba.txt", "r").readlines()
         if self.flags.y_dim:
             self.y_label = [[0 if i == '-1' else 1 for i in x.split()[1:]] for x in celeba_attr_f[2:]]
-            self.train_data_with_label = [(x, y) for x in self.train_data for y in self.y_label[:len(self.train_data)]]
-            self.val_data_with_label = [(x, y) for x in self.val_data for y in self.y_label[len(self.train_data):]]
+            train_temp = [[x] for x in self.train_data]
+            train_label = [[x] for x in self.y_label[:self.num_trains]]
+            self.train_data_with_label = np.concatenate([train_temp, train_label], axis=1)
+            val_temp = [[x] for x in self.val_data]
+            val_label = [[x] for x in self.y_label[self.num_trains:]]
+            self.val_data_with_label = np.concatenate([val_temp, val_label], axis=1)
         else:
             self.y_label = None
-
 
         print('Load {} dataset SUCCESS!'.format(self.dataset_name))
 
