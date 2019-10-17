@@ -70,7 +70,7 @@ class CelebA(object):
             batch_labels = [self.train_data_with_label[x][1:] for x in batch_datas]
             batch_paths = [self.train_data_with_label[x][0] for x in batch_datas]
             for i in batch_datas:
-                del self.train_data_with_label[i]
+                np.delete(self.train_data_with_label, i, 0)
         else:
             batch_paths = np.random.choice(self.train_data, batch_size, replace=False)
             batch_labels = None
@@ -85,7 +85,7 @@ class CelebA(object):
             batch_labels = [self.val_data_with_label[x][1:] for x in batch_datas]
             batch_paths = [self.val_data_with_label[x][0] for x in batch_datas]
             for i in batch_datas:
-                del self.val_data_with_label[i]
+                np.delete(self.val_data_with_label, i, 0)
         else:
             batch_paths = np.random.choice(self.val_data, batch_size, replace=False)
             batch_labels = None
