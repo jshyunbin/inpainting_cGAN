@@ -65,9 +65,12 @@ class CelebA(object):
 
     def train_next_batch(self, batch_size):
         if self.flags.y_dim:
-            batch_datas = np.random.choice(self.train_data_with_label, batch_size, replace=False)
-            batch_labels = [x[1] for x in batch_datas]
-            batch_paths = [x[0] for x in batch_datas]
+            index = [x for x in range(len(self.train_data_with_label))]
+            batch_datas = np.random.choice(index, batch_size, replace=False)
+            batch_labels = [self.train_data_with_label[x][1:] for x in batch_datas]
+            batch_paths = [self.train_data_with_label[x][0] for x in batch_datas]
+            for i in batch_datas:
+                del self.train_data_with_label[i]
         else:
             batch_paths = np.random.choice(self.train_data, batch_size, replace=False)
             batch_labels = None
@@ -77,9 +80,12 @@ class CelebA(object):
 
     def val_next_batch(self, batch_size):
         if self.flags.y_dim:
-            batch_datas = np.random.choice(self.val_data_with_label, batch_size, replace=False)
-            batch_labels = [x[1] for x in batch_datas]
-            batch_paths = [x[0] for x in batch_datas]
+            index = [x for x in range(len(self.val_data_with_label))]
+            batch_datas = np.random.choice(index, batch_size, replace=False)
+            batch_labels = [self.val_data_with_label[x][1:] for x in batch_datas]
+            batch_paths = [self.val_data_with_label[x][0] for x in batch_datas]
+            for i in batch_datas:
+                del self.val_data_with_label[i]
         else:
             batch_paths = np.random.choice(self.val_data, batch_size, replace=False)
             batch_labels = None
