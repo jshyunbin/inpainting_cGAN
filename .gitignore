@@ -3,10 +3,7 @@
 .idea/
 
 # Datasets
-Data/train/
-Data/val/
-Data/celebA
-Data/vub
+Data
 
 # sample images
 semantic-image-inpainting-master/sample*.png

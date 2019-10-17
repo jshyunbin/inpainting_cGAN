@@ -17,6 +17,7 @@ tf.flags.DEFINE_string('dataset', 'celebA', 'dataset name for choice [celebA|svh
 tf.flags.DEFINE_float('learning_rate', 0.01, 'learning rate to update latent vector z, default: 0.01')
 tf.flags.DEFINE_float('momentum', 0.9, 'momentum term of the NAG optimizer for latent vector, default: 0.9')
 tf.flags.DEFINE_integer('z_dim', 100, 'dimension of z vector, default: 100')
+tf.flags.DEFINE_integer('y_dim', 0, 'dimension of y label, default: 0')
 tf.flags.DEFINE_float('lamb', 3, 'hyper-parameter for prior loss, default: 3')  # lambda is 0.003 in the paper
 tf.flags.DEFINE_bool('is_blend', True, 'blend predicted image to original image, default: true')
 tf.flags.DEFINE_string('mask_type', 'center', 'mask type choice in [center|random|half|pattern], default: center')

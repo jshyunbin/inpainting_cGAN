@@ -262,7 +262,6 @@ class DCGAN(object):
         # parameters for plot size
         scale, margin = 0.04, 0.01
         n_cols, n_rows = int(np.sqrt(len(imgs))), int(np.sqrt(len(imgs)))
-        cell_size_h, cell_size_w = imgs[0].shape[0] * scale, imgs[0].shape[1] * scale
 
         imgs = [utils.inverse_transform(imgs[idx]) for idx in range(len(imgs))]
 

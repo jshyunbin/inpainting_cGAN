@@ -1,6 +1,7 @@
 import collections
 import numpy as np
 import tensorflow as tf
+import cv2 as cv
 from scipy.signal import convolve2d
 import matplotlib as mpl
 mpl.use('TkAgg')  # or whatever other backend that you want to solve Segmentation fault (core dumped)
@@ -59,8 +60,9 @@ class ModelInpaint(object):
 
         self.summary_op = tf.summary.merge_all()
 
-    def __call__(self, imgs, iter_time):
+    def __call__(self, imgs, label, iter_time):
         feed_dict = {self.dcgan.z: self.z_vectors,
+                     self.dcgan.Y_label: label,
                      self.wmasks_ph: self.wmasks,
                      self.images_ph: imgs}
         out_vars = [self.context_loss, self.prior_loss, self.total_loss, self.grad, self.dcgan.g_samples,
@@ -118,14 +120,34 @@ class ModelInpaint(object):
         return masks_3c
 
     def plots(self, img_list, save_file, num_try):
+        # TODO: add num_try in this code
         n_cols = len(img_list)
         n_rows = self.flags.sample_batch
 
         # parameters for plot size
         scale, margin = 0.04, 0.001
+
+        output = (img_list[0][0] * self.masks[0]).reshape(self.image_size[0], self.image_size[1], self.image_size[2])
+        for row_index in range(n_rows - 1):
+            output = cv.vconcat([output, (img_list[0][row_index + 1] * self.masks[row_index + 1]).reshape(
+                self.image_size[0], self.image_size[1], self.image_size[2])])
+
+        for col_index in range(n_cols - 1):
+            out = (img_list[col_index][0] * self.masks[0]).reshape(self.image_size[0], self.image_size[1],
+                                                                   self.image_size[2])
+            for row_index in range(n_rows - 1):
+                out = cv.vconcat([out, (img_list[col_index][row_index + 1] * self.masks[row_index + 1]).reshape(
+                    self.image_size[0], self.image_size[1], self.image_size[2])])
+            output = cv.hconcat([output, out])
+
+        output = np.uint8(output * 255.0)
+        print(np.min(output), np.max(output))
+
+        cv.imwrite(save_file + '/sample_{}.png'.format(str(iter_time)), output)
+        """
         cell_size_h, cell_size_w = img_list[0][0].shape[0] * scale, img_list[0][0].shape[1] * scale
         fig = plt.figure(figsize=(cell_size_w * n_cols, cell_size_h * n_rows))  # (column, row)
-        gs = gridspec.GridSpec(n_rows, n_cols)  # (row, column)
+        gs = gridspec.GridSpec(n_rows, n_cols)  # (row, column)s
         gs.update(wspace=margin, hspace=margin)
 
         # save more bigger image
@@ -146,6 +168,7 @@ class ModelInpaint(object):
 
         plt.savefig(save_file + '/{}_{}.png'.format(self.flags.mask_type, num_try), bbox_inches='tight')
         plt.close(fig)
+        """
 
 
 class Flags(object):
