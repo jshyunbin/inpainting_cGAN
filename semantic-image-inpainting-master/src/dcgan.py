@@ -21,7 +21,7 @@ def conv_cond_concat(x, y):
     """Concatenate conditioning vector on feature map axis."""
     x_shapes = x.get_shape()
     y_shapes = y.get_shape()
-    return concat([x, y*tf.ones([x_shapes[0], x_shapes[1], x_shapes[2], y_shapes[3]])], 3)
+    return concat([x, y*tf.ones([y_shapes[0], x_shapes[1], x_shapes[2], y_shapes[3]])], 3)
 
 
 class DCGAN(object):
@@ -49,7 +49,7 @@ class DCGAN(object):
 
         self.g_samples = self.generator(self.z, self.Y_label)
         d_real, d_logit_real = self.discriminator(self.Y, self.Y_label)
-        d_fake, d_logit_fake = self.discriminator(self.g_samples, is_reuse=True)
+        d_fake, d_logit_fake = self.discriminator(self.g_samples, self.Y_label, is_reuse=True)
 
         # discriminator loss
         d_loss_real = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(
@@ -126,6 +126,9 @@ class DCGAN(object):
                 h0_reshape = tf.reshape(h0_linear, [tf.shape(h0_linear)[0], 4, 4, self.gen_c[0]])
                 h0_batchnorm = tf_utils.batch_norm(h0_reshape, name='h0_batchnorm', _ops=self._gen_train_ops)
                 h0_relu = tf.nn.relu(h0_batchnorm, name='h0_relu')
+                print((np.shape(h0_relu)))
+                print(np.shape(yb))
+
                 h0 = conv_cond_concat(h0_relu, yb)
 
                 # 8 x 8
