@@ -60,13 +60,13 @@ class Solver(object):
             for iter_time in range(self.flags.iters):
                 loss, img_outs, summary = self.model(imgs, iter_time)  # inference
 
-                # save best gen_results accroding to the total loss
+                # save best gen_results according to the total loss
                 for iter_loss in range(self.flags.sample_batch):
                     if best_loss[iter_loss] > loss[2][iter_loss]:  # total loss
                         best_loss[iter_loss] = loss[2][iter_loss]
                         best_outs[iter_loss] = img_outs[iter_loss]
 
-                self.model.print_info(loss, iter_time, num_try)  # pring loss information
+                self.model.print_info(loss, iter_time, num_try)  # print loss information
 
                 if num_try == 0:  # save first try-information on the tensorboard only
                     self.train_writer.add_summary(summary, iter_time)  # write to tensorboard

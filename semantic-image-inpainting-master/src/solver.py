@@ -73,6 +73,12 @@ class Solver(object):
 
             # train_step
             batch_imgs, batch_y_ind = self.dataset.train_next_batch(batch_size=self.flags.batch_size)
+
+            # print(np.min(batch_imgs), np.max(batch_imgs))
+            # print(batch_y_ind)
+            # print(batch_y_ind[0])
+            # exit(1)
+
             loss, summary = self.model.train_step(batch_imgs, batch_y_ind)
             self.model.print_info(loss, self.iter_time)
             self.train_writer.add_summary(summary, self.iter_time)

@@ -216,7 +216,10 @@ class DCGAN(object):
                 return tf.nn.sigmoid(h4_linear), h4_linear
 
     def train_step(self, imgs, index):
-        feed = {self.z: self.sample_z(num=self.batch_size), self.Y: imgs, self.Y_label: index}
+        if self.flags.y_dim:
+            feed = {self.z: self.sample_z(num=self.batch_size), self.Y: imgs, self.Y_label: index}
+        else:
+            feed = {self.z: self.sample_z(num=self.batch_size), self.Y: imgs}
 
         _, d_loss = self.sess.run([self.dis_optim, self.d_loss], feed_dict=feed)
         _, g_loss = self.sess.run([self.gen_optim, self.g_loss], feed_dict=feed)
@@ -227,7 +230,10 @@ class DCGAN(object):
         return [d_loss, g_loss], summary
 
     def sample_imgs(self):
-        g_feed = {self.z: self.sample_z(num=self.flags.batch_size), self.Y_label: self.sample_label()}
+        if self.flags.y_dim:
+            g_feed = {self.z: self.sample_z(num=self.flags.batch_size), self.Y_label: self.sample_label()}
+        else:
+            g_feed = {self.z: self.sample_z(num=self.flags.batch_size)}
         y_fakes = self.sess.run(self.g_samples, feed_dict=g_feed)
         return [y_fakes[:self.flags.sample_batch]]
 

@@ -3,10 +3,6 @@ import numpy as np
 import tensorflow as tf
 import cv2 as cv
 from scipy.signal import convolve2d
-import matplotlib as mpl
-mpl.use('TkAgg')  # or whatever other backend that you want to solve Segmentation fault (core dumped)
-import matplotlib.pyplot as plt
-import matplotlib.gridspec as gridspec
 
 import utils as utils
 from dcgan import DCGAN
@@ -29,8 +25,8 @@ class ModelInpaint(object):
         print('Initialized Model Inpaint SUCCESS!')
 
     def _build_net(self):
-        self.wmasks_ph = tf.placeholder(tf.float32, [None, *self.image_size], name='wmasks')
-        self.images_ph = tf.placeholder(tf.float32, [None, *self.image_size], name='images')
+        self.wmasks_ph = tf.placeholder(tf.float32, [None, self.image_size], name='wmasks')
+        self.images_ph = tf.placeholder(tf.float32, [None, self.image_size], name='images')
 
         self.context_loss = tf.reduce_sum(tf.contrib.layers.flatten(
             tf.abs(tf.multiply(self.wmasks_ph, self.dcgan.g_samples) - tf.multiply(self.wmasks_ph, self.images_ph))), 1)
@@ -111,7 +107,7 @@ class ModelInpaint(object):
 
     @staticmethod
     def create3_channel_masks(masks):
-        masks_3c = np.zeros((*masks.shape, 3), dtype=np.float32)
+        masks_3c = np.zeros((masks.shape, 3), dtype=np.float32)
 
         for idx in range(masks.shape[0]):
             mask = masks[idx]
@@ -120,12 +116,11 @@ class ModelInpaint(object):
         return masks_3c
 
     def plots(self, img_list, save_file, num_try):
-        # TODO: add num_try in this code
         n_cols = len(img_list)
         n_rows = self.flags.sample_batch
 
         # parameters for plot size
-        scale, margin = 0.04, 0.001
+        # scale, margin = 0.04, 0.001
 
         output = (img_list[0][0] * self.masks[0]).reshape(self.image_size[0], self.image_size[1], self.image_size[2])
         for row_index in range(n_rows - 1):
@@ -143,7 +138,7 @@ class ModelInpaint(object):
         output = np.uint8(output * 255.0)
         print(np.min(output), np.max(output))
 
-        cv.imwrite(save_file + '/sample_{}.png'.format(str(iter_time)), output)
+        cv.imwrite(save_file + '/{}_{}.png'.format(self.flags.mask_type, num_try), output)
         """
         cell_size_h, cell_size_w = img_list[0][0].shape[0] * scale, img_list[0][0].shape[1] * scale
         fig = plt.figure(figsize=(cell_size_w * n_cols, cell_size_h * n_rows))  # (column, row)
