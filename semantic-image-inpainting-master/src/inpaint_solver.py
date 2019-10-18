@@ -32,13 +32,13 @@ class Solver(object):
         self.sess.run(tf.global_variables_initializer())
 
     def _make_folders(self):
-        self.model_out_dir = "/mnt/hdd0/rne_project/{}/model/{}".format(self.flags.dataset, self.flags.load_model)
-        self.test_out_dir = "/mnt/hdd0/rne_project/{}/inpaint/{}/is_blend_{}".format(self.flags.dataset, self.flags.load_model,
+        self.model_out_dir = "/mnt/{}/model/{}".format(self.flags.dataset, self.flags.load_model)
+        self.test_out_dir = "/mnt/{}/inpaint/{}/is_blend_{}".format(self.flags.dataset, self.flags.load_model,
                                                                str(self.flags.is_blend))
         if not os.path.isdir(self.test_out_dir):
             os.makedirs(self.test_out_dir)
 
-        self.train_writer = tf.summary.FileWriter("/mnt/hdd0/rne_project/{}/inpaint/{}/is_blend_{}/{}/log".format(
+        self.train_writer = tf.summary.FileWriter("/mnt/{}/inpaint/{}/is_blend_{}/{}/log".format(
             self.flags.dataset, self.flags.load_model, str(self.flags.is_blend), self.flags.mask_type),
             graph_def=self.sess.graph_def)
 

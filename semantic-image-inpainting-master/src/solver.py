@@ -37,25 +37,25 @@ class Solver(object):
         if self.flags.is_train:
             if self.flags.load_model is None:
                 cur_time = datetime.now().strftime("%Y%m%d-%H%M")
-                self.model_out_dir = "/mnt/hdd0/rne_project/{}/model/{}".format(self.flags.dataset, cur_time)
+                self.model_out_dir = "/mnt/{}/model/{}".format(self.flags.dataset, cur_time)
                 if not os.path.isdir(self.model_out_dir):
                     os.makedirs(self.model_out_dir)
             else:
                 cur_time = self.flags.load_model
-                self.model_out_dir = "/mnt/hdd0/rne_project/{}/model/{}".format(self.flags.dataset, cur_time)
+                self.model_out_dir = "/mnt/{}/model/{}".format(self.flags.dataset, cur_time)
 
-            self.sample_out_dir = "/mnt/hdd0/rne_project/{}/sample/{}".format(self.flags.dataset, cur_time)
+            self.sample_out_dir = "/mnt/{}/sample/{}".format(self.flags.dataset, cur_time)
 
-            self.dataset_out_dir = "/mnt/hdd0/rne_project/{}/dataset/{}".format(self.flags.dataset, cur_time)
+            self.dataset_out_dir = "/mnt/{}/dataset/{}".format(self.flags.dataset, cur_time)
 
             if not os.path.isdir(self.sample_out_dir):
                 os.makedirs(self.sample_out_dir)
 
-            self.train_writer = tf.summary.FileWriter("/mnt/hdd0/rne_project/{}/logs/{}".format(self.flags.dataset, cur_time),
+            self.train_writer = tf.summary.FileWriter("/mnt/{}/logs/{}".format(self.flags.dataset, cur_time),
                                                       graph_def=self.sess.graph_def)
         elif not self.flags.is_train:
-            self.model_out_dir = "/mnt/hdd0/rne_project/{}/model/{}".format(self.flags.dataset, self.flags.load_model)
-            self.test_out_dir = "/mnt/hdd0/rne_project/{}/test/{}".format(self.flags.dataset, self.flags.load_model)
+            self.model_out_dir = "/mnt/{}/model/{}".format(self.flags.dataset, self.flags.load_model)
+            self.test_out_dir = "/mnt/{}/test/{}".format(self.flags.dataset, self.flags.load_model)
             if not os.path.isdir(self.test_out_dir):
                 os.makedirs(self.test_out_dir)
 

@@ -22,8 +22,8 @@ tf.flags.DEFINE_integer('z_dim', 100, 'dimension of z vector, default: 100')
 
 tf.flags.DEFINE_integer('iters', 200000, 'number of iterations, default: 200000')
 tf.flags.DEFINE_integer('print_freq', 100, 'print frequency for loss, default: 100')
-tf.flags.DEFINE_integer('save_freq', 100, 'save frequency for model, default: 100')
-tf.flags.DEFINE_integer('sample_freq', 50, 'sample frequency for saving image, default: 50')
+tf.flags.DEFINE_integer('save_freq', 500, 'save frequency for model, default: 100')
+tf.flags.DEFINE_integer('sample_freq', 500, 'sample frequency for saving image, default: 50')
 tf.flags.DEFINE_integer('sample_batch', 64, 'number of sampling images for check generator quality, default: 64')
 tf.flags.DEFINE_string('load_model', None,
                        'folder of saved model that you wish to test, (e.g. 20180704-1736), default: None')
