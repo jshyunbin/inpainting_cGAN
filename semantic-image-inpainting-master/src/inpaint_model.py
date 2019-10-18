@@ -25,8 +25,8 @@ class ModelInpaint(object):
         print('Initialized Model Inpaint SUCCESS!')
 
     def _build_net(self):
-        self.wmasks_ph = tf.placeholder(tf.float32, [None, self.image_size], name='wmasks')
-        self.images_ph = tf.placeholder(tf.float32, [None, self.image_size], name='images')
+        self.wmasks_ph = tf.placeholder(tf.float32, [None, self.image_size[0], self.image_size[1], 3], name='wmasks')
+        self.images_ph = tf.placeholder(tf.float32, [None, self.image_size[0], self.image_size[1], 3], name='images')
 
         self.context_loss = tf.reduce_sum(tf.contrib.layers.flatten(
             tf.abs(tf.multiply(self.wmasks_ph, self.dcgan.g_samples) - tf.multiply(self.wmasks_ph, self.images_ph))), 1)
@@ -107,7 +107,7 @@ class ModelInpaint(object):
 
     @staticmethod
     def create3_channel_masks(masks):
-        masks_3c = np.zeros((masks.shape, 3), dtype=np.float32)
+        masks_3c = np.zeros(masks.shape + tuple([3]), dtype=np.float32)
 
         for idx in range(masks.shape[0]):
             mask = masks[idx]
@@ -169,6 +169,7 @@ class ModelInpaint(object):
 class Flags(object):
     def __init__(self, flags):
         self.z_dim = flags.z_dim
+        self.y_dim = flags.y_dim
         self.learning_rate = flags.learning_rate
         self.beta1 = flags.momentum
         self.sample_batch = flags.sample_batch

@@ -21,7 +21,7 @@ def conv_cond_concat(x, y):
     """Concatenate conditioning vector on feature map axis."""
     x_shapes = x.get_shape()
     y_shapes = y.get_shape()
-    return concat([x, y*tf.ones([y_shapes[0], x_shapes[1], x_shapes[2], y_shapes[3]])], 3)
+    return concat([x, y*tf.ones([tf.shape(x)[0], x_shapes[1], x_shapes[2], y_shapes[3]])], 3)
 
 
 class DCGAN(object):
@@ -29,7 +29,6 @@ class DCGAN(object):
         self.sess = sess
         self.flags = flags
         self.image_size = image_size
-        self.batch_size = self.flags.batch_size
 
         self._gen_train_ops, self._dis_train_ops = [], []
         self.gen_c = [1024, 512, 256, 128]  # 4, 8, 16, 32
@@ -118,7 +117,7 @@ class DCGAN(object):
                 return tf.nn.tanh(output)
 
             else:
-                yb = tf.reshape(y, [self.batch_size, 1, 1, self.flags.y_dim])
+                yb = tf.reshape(y, [tf.shape(y)[0], 1, 1, self.flags.y_dim])
                 z = concat([data_flatten, y], 1)
 
                 # 4 x 4
@@ -184,7 +183,7 @@ class DCGAN(object):
                 return tf.nn.sigmoid(h4_linear), h4_linear
 
             else:
-                yb = tf.reshape(y, [self.batch_size, 1, 1, self.flags.y_dim])
+                yb = tf.reshape(y, [tf.shape(y)[0], 1, 1, self.flags.y_dim])
                 x = conv_cond_concat(data, yb)
 
                 h0_conv = tf_utils.conv2d(x, self.dis_c[0] + self.flags.y_dim, name='h0_conv2d')
@@ -217,9 +216,9 @@ class DCGAN(object):
 
     def train_step(self, imgs, index):
         if self.flags.y_dim:
-            feed = {self.z: self.sample_z(num=self.batch_size), self.Y: imgs, self.Y_label: index}
+            feed = {self.z: self.sample_z(num=self.flags.batch_size), self.Y: imgs, self.Y_label: index}
         else:
-            feed = {self.z: self.sample_z(num=self.batch_size), self.Y: imgs}
+            feed = {self.z: self.sample_z(num=self.flags.batch_size), self.Y: imgs}
 
         _, d_loss = self.sess.run([self.dis_optim, self.d_loss], feed_dict=feed)
         _, g_loss = self.sess.run([self.gen_optim, self.g_loss], feed_dict=feed)
@@ -231,11 +230,11 @@ class DCGAN(object):
 
     def sample_imgs(self):
         if self.flags.y_dim:
-            g_feed = {self.z: self.sample_z(num=self.flags.batch_size), self.Y_label: self.sample_label()}
+            g_feed = {self.z: self.sample_z(num=self.flags.sample_batch), self.Y_label: self.sample_label()}
         else:
-            g_feed = {self.z: self.sample_z(num=self.flags.batch_size)}
+            g_feed = {self.z: self.sample_z(num=self.flags.sample_batch)}
         y_fakes = self.sess.run(self.g_samples, feed_dict=g_feed)
-        return [y_fakes[:self.flags.sample_batch]]
+        return [y_fakes]
 
     def sample_z(self, num=64):
         return np.random.uniform(-1., 1., size=[num, self.flags.z_dim])
@@ -243,14 +242,12 @@ class DCGAN(object):
     def sample_label(self):
         temp = [[a, b, c, d, e] for a in range(2) for b in range(2) for c in range(2) for d in range(2) for e in
                 range(2)]
-        temp1 = np.concatenate((temp, temp))
-        temp2 = np.concatenate((temp1, temp1))
-        return np.concatenate((temp2, temp2))
+        return np.concatenate((temp, temp))
 
     def print_info(self, loss, iter_time):
         if np.mod(iter_time, self.flags.print_freq) == 0:
             ord_output = collections.OrderedDict([('cur_iter', iter_time), ('tar_iters', self.flags.iters),
-                                                  ('batch_size', self.batch_size),
+                                                  ('batch_size', self.flags.batch_size),
                                                   ('d_loss', loss[0]), ('g_loss', loss[1]),
                                                   ('dataset', self.flags.dataset),
                                                   ('gpu_index', self.flags.gpu_index)])

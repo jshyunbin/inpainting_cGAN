@@ -69,6 +69,7 @@ class CelebA(object):
             batch_datas = np.random.choice(index, batch_size, replace=False)
             batch_labels = [self.train_data_with_label[x][1:] for x in batch_datas]
             batch_paths = [self.train_data_with_label[x][0] for x in batch_datas]
+            batch_datas = np.sort(batch_datas)[::-1]
             for i in batch_datas:
                 np.delete(self.train_data_with_label, i, 0)
         else:
@@ -84,6 +85,7 @@ class CelebA(object):
             batch_datas = np.random.choice(index, batch_size, replace=False)
             batch_labels = [self.val_data_with_label[x][1:] for x in batch_datas]
             batch_paths = [self.val_data_with_label[x][0] for x in batch_datas]
+            batch_datas = np.sort(batch_datas)[::-1]
             for i in batch_datas:
                 np.delete(self.val_data_with_label, i, 0)
         else:

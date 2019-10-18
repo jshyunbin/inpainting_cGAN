@@ -58,7 +58,7 @@ class Solver(object):
 
             start_time = time.time()  # measure inference time
             for iter_time in range(self.flags.iters):
-                loss, img_outs, summary = self.model(imgs, iter_time)  # inference
+                loss, img_outs, summary = self.model(imgs, y_label, iter_time)  # inference
 
                 # save best gen_results according to the total loss
                 for iter_loss in range(self.flags.sample_batch):
