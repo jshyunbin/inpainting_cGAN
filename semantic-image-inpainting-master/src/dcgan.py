@@ -230,7 +230,8 @@ class DCGAN(object):
 
     def sample_imgs(self):
         if self.flags.y_dim:
-            g_feed = {self.z: self.sample_z(num=self.flags.sample_batch), self.Y_label: self.sample_label()}
+            g_feed = {self.z: self.sample_z(num=self.flags.sample_batch), self.Y_label: self.sample_label(
+                self.flags.y_dim, num=self.flags.sample_batch)}
         else:
             g_feed = {self.z: self.sample_z(num=self.flags.sample_batch)}
         y_fakes = self.sess.run(self.g_samples, feed_dict=g_feed)
@@ -239,10 +240,8 @@ class DCGAN(object):
     def sample_z(self, num=64):
         return np.random.uniform(-1., 1., size=[num, self.flags.z_dim])
 
-    def sample_label(self):
-        temp = [[a, b, c, d, e] for a in range(2) for b in range(2) for c in range(2) for d in range(2) for e in
-                range(2)]
-        return np.concatenate((temp, temp))
+    def sample_label(self, dim, num=64):
+        return np.random.randint(2, size=(num, dim))
 
     def print_info(self, loss, iter_time):
         if np.mod(iter_time, self.flags.print_freq) == 0:
