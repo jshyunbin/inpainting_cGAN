@@ -66,14 +66,11 @@ class CelebA(object):
     def train_next_batch(self, batch_size):
         if self.flags.y_dim:
             index = [x for x in range(len(self.train_data_with_label))]
-            batch_datas = np.random.choice(index, batch_size, replace=False)
+            batch_datas = np.random.choice(index, batch_size, replace=True)
             batch_labels = [self.train_data_with_label[x][1:] for x in batch_datas]
             batch_paths = [self.train_data_with_label[x][0] for x in batch_datas]
-            batch_datas = np.sort(batch_datas)[::-1]
-            for i in batch_datas:
-                np.delete(self.train_data_with_label, i, 0)
         else:
-            batch_paths = np.random.choice(self.train_data, batch_size, replace=False)
+            batch_paths = np.random.choice(self.train_data, batch_size, replace=True)
             batch_labels = None
         batch_imgs = [utils.load_data(batch_path, input_height=self.input_height, input_width=self.input_width)
                       for batch_path in batch_paths]
