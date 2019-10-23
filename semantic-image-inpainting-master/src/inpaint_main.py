@@ -20,7 +20,7 @@ tf.flags.DEFINE_integer('z_dim', 100, 'dimension of z vector, default: 100')
 tf.flags.DEFINE_integer('y_dim', 0, 'dimension of y label, default: 0')
 tf.flags.DEFINE_float('lamb', 3, 'hyper-parameter for prior loss, default: 3')  # lambda is 0.003 in the paper
 tf.flags.DEFINE_bool('is_blend', True, 'blend predicted image to original image, default: true')
-tf.flags.DEFINE_string('mask_type', 'center', 'mask type choice in [center|random|half|pattern], default: center')
+tf.flags.DEFINE_string('mask_type', 'center', 'mask type choice in [center|random|half|pattern|eye], default: center')
 tf.flags.DEFINE_integer('img_size', 64, 'image height or width, default: 64')
 tf.flags.DEFINE_bool('glasses', False, 'generates images with glasses when True, default: False')
 
