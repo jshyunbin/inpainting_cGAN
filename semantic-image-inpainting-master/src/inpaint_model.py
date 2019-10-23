@@ -60,7 +60,8 @@ class ModelInpaint(object):
         feed_dict = {self.dcgan.z: self.z_vectors,
                      self.dcgan.Y_label: label,
                      self.wmasks_ph: self.wmasks,
-                     self.images_ph: imgs}
+                     self.images_ph: imgs,
+                     self.dcgan.Y: imgs}
         out_vars = [self.context_loss, self.prior_loss, self.total_loss, self.grad, self.dcgan.g_samples,
                     self.summary_op]
 
@@ -128,10 +129,10 @@ class ModelInpaint(object):
                 self.image_size[0], self.image_size[1], self.image_size[2])])
 
         for col_index in range(n_cols - 1):
-            out = (img_list[col_index][0] * self.masks[0]).reshape(self.image_size[0], self.image_size[1],
+            out = (img_list[col_index + 1][0]).reshape(self.image_size[0], self.image_size[1],
                                                                    self.image_size[2])
             for row_index in range(n_rows - 1):
-                out = cv.vconcat([out, (img_list[col_index][row_index + 1] * self.masks[row_index + 1]).reshape(
+                out = cv.vconcat([out, (img_list[col_index + 1][row_index + 1]).reshape(
                     self.image_size[0], self.image_size[1], self.image_size[2])])
             output = cv.hconcat([output, out])
 

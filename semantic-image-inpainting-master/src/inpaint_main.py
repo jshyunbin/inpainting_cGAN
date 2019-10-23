@@ -24,7 +24,7 @@ tf.flags.DEFINE_string('mask_type', 'center', 'mask type choice in [center|rando
 tf.flags.DEFINE_integer('img_size', 64, 'image height or width, default: 64')
 
 tf.flags.DEFINE_integer('iters', 1500, 'number of iterations to optimize latent vector, default: 1500')
-tf.flags.DEFINE_integer('num_try', 20, 'number of randome samples, default: 20')
+tf.flags.DEFINE_integer('num_try', 20, 'number of random samples, default: 20')
 tf.flags.DEFINE_integer('print_freq', 100, 'print frequency for loss, default: 100')
 tf.flags.DEFINE_integer('sample_batch', 2, 'number of sampling images, default: 2')
 tf.flags.DEFINE_string('load_model', None,
