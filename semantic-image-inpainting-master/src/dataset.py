@@ -49,7 +49,7 @@ class CelebA(object):
         self.val_data = utils.all_files_under(self.celeba_val_path)
         self.num_vals = len(self.val_data)
 
-        celeba_attr_f = open("../../Data/celebA/list_attr_celeba.txt", "r").readlines()
+        celeba_attr_f = open("../../Data/celebA/" + self.flags.load_label, "r").readlines()
         if self.flags.y_dim:
             self.y_label = [[0 if i == '-1' else 1 for i in x.split()[1:]] for x in celeba_attr_f[2:]]
             train_temp = [[x] for x in self.train_data]

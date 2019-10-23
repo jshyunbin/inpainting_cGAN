@@ -29,6 +29,7 @@ tf.flags.DEFINE_string('load_model', None,
                        'folder of saved model that you wish to test, (e.g. 20180704-1736), default: None')
 
 tf.flags.DEFINE_integer('y_dim', 0, 'dimension of y label, default: 0')
+tf.flags.DEFINE_string('load_label', 'list_attr_celeba.txt', 'folder of label text files, default: list_attr_celeba.txt')
 
 
 def main(_):
