@@ -57,6 +57,9 @@ class ModelInpaint(object):
         self.summary_op = tf.summary.merge_all()
 
     def __call__(self, imgs, label, iter_time):
+        if self.flags.glasses:
+            for x in label:
+                x[0] = 1
         feed_dict = {self.dcgan.z: self.z_vectors,
                      self.dcgan.Y_label: label,
                      self.wmasks_ph: self.wmasks,
@@ -140,31 +143,6 @@ class ModelInpaint(object):
         print(np.min(output), np.max(output))
 
         cv.imwrite(save_file + '/{}_{}.png'.format(self.flags.mask_type, num_try), output)
-        """
-        cell_size_h, cell_size_w = img_list[0][0].shape[0] * scale, img_list[0][0].shape[1] * scale
-        fig = plt.figure(figsize=(cell_size_w * n_cols, cell_size_h * n_rows))  # (column, row)
-        gs = gridspec.GridSpec(n_rows, n_cols)  # (row, column)s
-        gs.update(wspace=margin, hspace=margin)
-
-        # save more bigger image
-        for col_index in range(n_cols):
-            for row_index in range(n_rows):
-                ax = plt.subplot(gs[row_index * n_cols + col_index])
-                plt.axis('off')
-                ax.set_xticklabels([])
-                ax.set_yticklabels([])
-                ax.set_aspect('equal')
-
-                if col_index == 0:  # original input image
-                    plt.imshow((img_list[col_index][row_index] * self.masks[row_index]).reshape(
-                        self.image_size[0], self.image_size[1], self.image_size[2]), cmap='Greys_r')
-                else:
-                    plt.imshow((img_list[col_index][row_index]).reshape(
-                        self.image_size[0], self.image_size[1], self.image_size[2]), cmap='Greys_r')
-
-        plt.savefig(save_file + '/{}_{}.png'.format(self.flags.mask_type, num_try), bbox_inches='tight')
-        plt.close(fig)
-        """
 
 
 class Flags(object):
