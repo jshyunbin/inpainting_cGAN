@@ -13,8 +13,10 @@ def gen_mask(flags):
         masks[:, low:upper, low:upper] = 0.
     elif flags.mask_type == 'eye':
         scale = 0.25
+        scale_ = 0.15
         low, upper = int(flags.img_size * scale), int(flags.img_size * (1.0 - scale))
-        masks[:, low:upper, :] = 0.
+        low_, upper_ = int(flags.img_size * scale_), int(flags.img_size * (1.0 - scale_))
+        masks[:, low:upper, low_:upper_] = 0.
     elif flags.mask_type == 'random':
         ratio = 0.8
         masks[np.random.random((flags.sample_batch, flags.img_size, flags.img_size)) <= ratio] = 0.
