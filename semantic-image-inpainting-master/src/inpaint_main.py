@@ -30,6 +30,7 @@ tf.flags.DEFINE_integer('print_freq', 100, 'print frequency for loss, default: 1
 tf.flags.DEFINE_integer('sample_batch', 2, 'number of sampling images, default: 2')
 tf.flags.DEFINE_string('load_model', None,
                        'saved DCGAN model that you wish to test, (e.g. 20180704-1736), default: None')
+tf.flags.DEFINE_string('load_model_iter', '', 'saved DCGAN iter that you wish to test, (e.g. 1000), default: \'\'')
 tf.flags.DEFINE_string('load_label', 'list_attr_celeba.txt', 'folder of label text files, default: list_attr_celeba.txt')
 
 

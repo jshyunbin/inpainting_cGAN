@@ -102,11 +102,12 @@ class Solver(object):
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
             self.saver.restore(self.sess, os.path.join(self.model_out_dir, ckpt_name))
 
-            meta_graph_path = ckpt.model_checkpoint_path + '.meta'
+            meta_graph_path = ckpt.model_checkpoint_path + '.meta' + self.flags.load_model_iter
             self.iter_time = int(meta_graph_path.split('-')[-1].split('.')[0])
 
             print('===========================')
-            print('   iter_time: {}'.format(self.iter_time))
+            print('   iter_time: {}'.format(self.flags.load_model_iter if self.flags.load_model_iter != '' else
+                                            self.iter_time))
             print('===========================')
             return True
         else:
