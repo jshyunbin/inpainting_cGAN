@@ -24,9 +24,9 @@ class CelebA(object):
         self.input_height = self.input_width = 108
         self.num_trains, self.num_vals = 0, 0
 
-        self.celeba_dataset_path = os.path.join('../../Data', self.dataset_name, 'img_align_celeba')
-        self.celeba_train_path = os.path.join('../../Data', self.dataset_name, 'train')
-        self.celeba_val_path = os.path.join('../../Data', self.dataset_name, 'val')
+        self.celeba_dataset_path = os.path.join('../Data', self.dataset_name, 'img_align_celeba')
+        self.celeba_train_path = os.path.join('../Data', self.dataset_name, 'train')
+        self.celeba_val_path = os.path.join('../Data', self.dataset_name, 'val')
 
         #
         # if not os.path.isfile(os.path.join('../../Data', self.dataset_name, 'train')):
@@ -49,7 +49,7 @@ class CelebA(object):
         self.val_data = utils.all_files_under(self.celeba_val_path)
         self.num_vals = len(self.val_data)
 
-        celeba_attr_f = open("../../Data/celebA/" + self.flags.load_label, "r").readlines()
+        celeba_attr_f = open("../Data/celebA/" + self.flags.load_label, "r").readlines()
         if self.flags.y_dim:
             self.y_label = [[0 if i == '-1' else 1 for i in x.split()[1:]] for x in celeba_attr_f[2:]]
             train_temp = [[x] for x in self.train_data]
@@ -97,8 +97,8 @@ class SVHN(object):
         self.image_size = (64, 64, 3)
         self.num_trains, self.num_vals = 0, 0
 
-        self.svhn_train_path = os.path.join('../../Data', self.dataset_name, 'train_32x32.mat')
-        self.svhn_val_path = os.path.join('../../Data', self.dataset_name, 'test_32x32.mat')
+        self.svhn_train_path = os.path.join('../Data', self.dataset_name, 'train_32x32.mat')
+        self.svhn_val_path = os.path.join('../Data', self.dataset_name, 'test_32x32.mat')
         self._load_svhn()
 
         np.random.seed(seed=int(time.time()))  # set random seed according to the current time
