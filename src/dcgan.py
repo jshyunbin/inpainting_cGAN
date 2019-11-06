@@ -285,30 +285,3 @@ class DCGAN(object):
         print(np.min(output), np.max(output))
 
         cv.imwrite(save_file + '/sample_{}.png'.format(str(iter_time)), output)
-        # fig = plt.figure(figsize=(cell_size_w * n_cols, cell_size_h * n_rows))  # (column, row)
-        # gs = gridspec.GridSpec(n_rows, n_cols)  # (row, column)
-        # gs.update(wspace=margin, hspace=margin)
-        #
-        # imgs = [utils.inverse_transform(imgs[idx]) for idx in range(len(imgs))]
-        #
-        # # save more bigger image
-        # for col_index in range(n_cols):
-        #     for row_index in range(n_rows):
-        #         ax = plt.subplot(gs[row_index * n_cols + col_index])
-        #         plt.axis('off')
-        #         ax.set_xticklabels([])
-        #         ax.set_yticklabels([])
-        #         ax.set_aspect('equal')
-        #         """
-        #         if self.image_size[2] == 3:
-        #             plt.imshow((imgs[row_index * n_cols + col_index]).reshape(
-        #                 self.image_size[0], self.image_size[1], self.image_size[2]), cmap='Greys_r')
-        #         elif self.image_size[2] == 1:
-        #             plt.imshow((imgs[row_index * n_cols + col_index]).reshape(
-        #                 self.image_size[0], self.image_size[1]), cmap='Greys_r')
-        #         else:
-        #             raise NotImplementedError
-        #             """
-        #
-        # plt.savefig(save_file + '/sample_{}.png'.format(str(iter_time)), bbox_inches='tight')
-        # plt.close(fig)
