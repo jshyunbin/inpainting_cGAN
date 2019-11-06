@@ -13,7 +13,7 @@ import cv2 as cv
 import utils as utils
 
 ROOT_DIR = os.path.dirname(os.path.realpath(__file__))
-DATA_DIR = os.path.join(ROOT_DIR, '../../Data')
+DATA_DIR = os.path.join(ROOT_DIR, '../Data')
 
 
 class CelebA(object):
